@@ -7,3 +7,4 @@ Skład zespołu:
 - Mikołaj Mazur
 - Szymon Szczubkowski
 - Tobiasz Przybylski
+- Aliaksei Shauchenka
