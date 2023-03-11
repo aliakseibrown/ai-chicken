@@ -30,24 +30,19 @@ class Tractor:
         self.parent_screen.blit(pygame.transform.rotate(self.block, self.angle), (self.x, self.y))  # rotate tractor
         pygame.display.flip()  # updating screen
 
-    def move_left(self):
-        self.x -= 50
-        self.angle = 90
-        self.draw()
-
-    def move_right(self):
-        self.x += 50
-        self.angle = 270
-        self.draw()
-
-    def move_up(self):
-        self.y -= 50
-        self.angle = 0
-        self.draw()
-
-    def move_down(self):
-        self.y += 50
-        self.angle = 180
+    def move(self, direction):
+        if direction == 'up':
+            self.y -= 50
+            self.angle = 0
+        if direction == 'down':
+            self.y += 50
+            self.angle = 180
+        if direction == 'left':
+            self.x -= 50
+            self.angle = 90
+        if direction == 'right':
+            self.x += 50
+            self.angle = 270
         self.draw()
 
     def walk(self):
@@ -63,14 +58,7 @@ class Tractor:
             choice.pop(1)
 
         self.direction = random.choice(choice)
-        if self.direction == 'up':
-            self.move_up()
-        if self.direction == 'down':
-            self.move_down()
-        if self.direction == 'left':
-            self.move_left()
-        if self.direction == 'right':
-            self.move_right()
+        self.move(self.direction)
 
 
 class Game:
@@ -100,13 +88,13 @@ class Game:
                         running = False
                         # in case we want to use keyboard
                     # if pygame.key.get_pressed()[K_UP]:
-                    #     self.tractor.move_up()
+                    #     self.tractor.move('up')
                     # if pygame.key.get_pressed()[K_DOWN]:
-                    #     self.tractor.move_down()
+                    #     self.tractor.move('down')
                     # if pygame.key.get_pressed()[K_LEFT]:
-                    #     self.tractor.move_left()
+                    #     self.tractor.move('left')
                     # if pygame.key.get_pressed()[K_RIGHT]:
-                    #     self.tractor.move_right()
+                    #     self.tractor.move('right')
                 elif event.type == QUIT:
                     running = False
 
