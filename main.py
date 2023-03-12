@@ -61,7 +61,32 @@ class Tractor:
         self.move(self.direction)
 
 
+class Field:
+    def __init__(self, parent_screen):
+        self.parent_screen = parent_screen
+        self.block = pygame.image.load(r'resources\field.png').convert()
+
+    def place_field(self, field_matrix):
+        for m, posY in enumerate(field_matrix):
+            for n, posX in enumerate(posY):
+                if field_matrix[m][n] == 1:
+                    self.parent_screen.blit(self.block, (n * 50, m * 50))
+
+        pygame.display.flip()
+
+
 class Game:
+    field_matrix = [[0 for m in range(10)] for n in range(10)]
+
+    for i in range(10):
+        while True:
+            field_posX = random.randint(0, 9)
+            field_posY = random.randint(0, 9)
+
+            if field_matrix[field_posY][field_posX] == 0:
+                field_matrix[field_posY][field_posX] = 1
+                break
+
     def __init__(self):
         pygame.init()
         self.screenWidth = 500
@@ -73,6 +98,9 @@ class Game:
         self.tractor.draw()
 
         self.lines = Lines(self.surface)
+
+        self.field = Field(self.surface)
+        self.field.place_field(self.field_matrix)
 
     def run(self):
         running = True
@@ -101,6 +129,7 @@ class Game:
             if (time_now - last_time).total_seconds() > 1:  # tractor moves every 1 sec
                 last_time = datetime.now()
                 self.tractor.walk()
+                self.field.place_field(self.field_matrix)
                 self.lines.draw_lines()
                 print(f'x, y = ({int(self.tractor.x / 50)}, {int(self.tractor.y / 50)})')
 
