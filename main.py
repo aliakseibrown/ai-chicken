@@ -19,23 +19,26 @@ class Lines:
         for i in range(1, 10):
             pygame.draw.line(self.parent_scr, (228, 253, 227), (conf.cell_size * i, 0), (conf.cell_size * i, conf.screen_size), 1)
             pygame.draw.line(self.parent_scr, (228, 253, 227), (0, conf.cell_size * i), (conf.screen_size, conf.cell_size * i), 1)
-        pygame.display.flip()
+        #pygame.display.flip()
 
 
 class Tractor:
     def __init__(self, parent_screen):
+        conf = Configurations()
         self.parent_screen = parent_screen
-        self.block = pygame.image.load(r'resources/arrow.png').convert()
-        self.x = 100
-        self.y = 100
+        self.image = pygame.image.load(r'resources/tractor.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (conf.cell_size, conf.cell_size+5))
+        #self.block = pygame.Rect(int(conf.cell_size), int(conf.cell_size), conf.cell_size, conf.cell_size)
+        self.x = conf.cell_size*2
+        self.y = conf.cell_size*2
         self.angle = 0
         self.direction = 'up'
 
     def draw(self):
         #self.parent_screen.fill((120, 120, 0))  # background color
-        self.parent_screen.blit(self.block, (self.x, self.y))
-        self.parent_screen.blit(pygame.transform.rotate(self.block, self.angle), (self.x, self.y))  # rotate tractor
-        pygame.display.flip()  # updating screen
+        #self.parent_screen.blit(self.block, (self.x, self.y))
+        self.parent_screen.blit(pygame.transform.rotate(self.image, self.angle), (self.x, self.y))  # rotate tractor
+        #pygame.display.flip()  # updating screen
 
     def move(self, direction):
         conf = Configurations()
@@ -81,7 +84,7 @@ class Field:
                 if field_matrix[m][n] == 1:
                     self.parent_screen.blit(self.block, (n * conf.cell_size, m * conf.cell_size))
 
-        pygame.display.flip()
+        #pygame.display.flip()
 
 
 class Game:
@@ -122,8 +125,7 @@ class Game:
             clock.tick(60)  # manual fps control not to overwork the computer
             time_now = datetime.now()
 
-            
-
+    
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if pygame.key.get_pressed()[K_ESCAPE]:
@@ -140,14 +142,15 @@ class Game:
                 elif event.type == QUIT:
                     running = False
 
-                self.surface.fill((120, 120, 0))  # background color
+                self.surface.fill((140, 203, 97))  # background color
                 self.field.place_field(self.field_matrix)
                 self.lines.draw_lines()
                 self.tractor.draw()
+                pygame.display.update()
            
 
-            if (time_now - last_time).total_seconds() > 1:  # tractor moves every 1 sec
-                last_time = datetime.now()
+            # if (time_now - last_time).total_seconds() > 1:  # tractor moves every 1 sec
+            #     last_time = datetime.now()
                 #self.tractor.walk()
                 #print(f'x, y = ({int(self.tractor.x / 50)}, {int(self.tractor.y / 50)})')
 
