@@ -4,24 +4,21 @@ from pygame.math import Vector2
 
 class Tractor:
     def __init__(self, parent_screen, cell_size):
+        self.parent_screen = parent_screen
 
         self.up = pygame.image.load(r'resources/up.png').convert_alpha()
         self.down = pygame.image.load(r'resources/down.png').convert_alpha()
         self.left = pygame.image.load(r'resources/left.png').convert_alpha()
         self.right = pygame.image.load(r'resources/right.png').convert_alpha()
 
-        self.parent_screen = parent_screen
-        #self.image = pygame.image.load(r'resources/robot3.png').convert_alpha()
-
-        self.up = pygame.transform.scale(self.up, (cell_size, cell_size))
+        self.up = pygame.transform.scale(self.up, (cell_size+2, cell_size))
         self.down = pygame.transform.scale(self.down, (cell_size, cell_size+2))
         self.left = pygame.transform.scale(self.left, (cell_size+2, cell_size+2))
-        self.right = pygame.transform.scale(self.right, (cell_size+3, cell_size+1))
-
+        self.right = pygame.transform.scale(self.right, (cell_size+4, cell_size+1))
 
         self.x = cell_size*2
         self.y = cell_size*2
-        self.pos = Vector2(self.x, self.y)
+        #self.pos = Vector2(self.x, self.y)
         self.angle = 0
         self.direction = 'up'
         self.image = self.down
@@ -30,23 +27,33 @@ class Tractor:
     def draw(self):
         self.parent_screen.blit(self.image, (self.x, self.y))  # rotate tractor
 
-    def move(self, direction, cell_size):
+
+    def move(self, direction, cell_size, cell_number):
         if direction == 'up':
-            self.y -= cell_size
+            if self.y != 0:
+                self.y -= cell_size
             self.image = self.up
-            #self.angle = 0
         if direction == 'down':
-            self.y += cell_size
+            if self.y != (cell_number-1)*cell_size:
+                self.y += cell_size
             self.image = self.down
-            #self.angle = 180
         if direction == 'left':
-            self.x -= cell_size
+            if self.x != 0:
+                self.x -= cell_size
             self.image = self.left
-            #self.angle = 90
         if direction == 'right':
-            self.x += cell_size
+            if self.x != (cell_number-1)*cell_size:
+                self.x += cell_size
             self.image = self.right
-            #self.angle = 270
+        print(self.x, self.y)
+
+    def water(self, body_before, body_after, cell_size):
+        self.pos = [self.x/cell_size, self.y/cell_size]
+        if self.pos in body_before:
+            body_before.remove(self.pos)
+            body_after.append(self.pos)
+            print('HERE!')
+        #print(body)
 
     def walk(self):
         choice = ['up', 'down', 'left', 'right']
