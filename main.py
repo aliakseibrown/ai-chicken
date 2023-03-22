@@ -1,5 +1,6 @@
 import pygame
 import random
+import land
 import tractor
 import blocks
 from pygame.locals import *
@@ -16,18 +17,16 @@ class Game:
         self.green_leaf_body = []
         self.stone_body = []
         self.flower_body = []
-        
+        self.dead_grass_body = []
+        self.grass_body = []
+
     
         self.entire_block = {}
 
         pygame.init()
         self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))  # initialize a window
 
-        self.grass_image = pygame.image.load(r'resources/grass.png').convert()
-        self.grass_image = pygame.transform.scale(self.grass_image, (self.cell_size, self.cell_size))
-
-        self.bad_grass_image = pygame.image.load(r'resources/bad_grass.png').convert()
-        self.bad_grass_image = pygame.transform.scale(self.bad_grass_image, (self.cell_size, self.cell_size))
+        self.land = land.Land(self.cell_size, self.cell_number, self.grass_body)
 
         self.blocks = blocks.Blocks(self.surface,self.cell_size)
 
@@ -62,17 +61,15 @@ class Game:
                         self.tractor.move('right',self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_SPACE]:
                         self.tractor.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size) 
+                        #self.tractor.water(self.grass_body, self.dead_grass_body, self.cell_size)
+                        
                 elif event.type == QUIT:
                     running = False
 
                 self.surface.fill((140, 203, 97))  # background color
 
-                for i in range(0, self.cell_number):
-                    for k in range(0, self.cell_number):
-                        x = int(i * self.cell_size)
-                        y = int(k * self.cell_size)
-                        self.surface.blit(self.grass_image, (x, y))
-                
+                self.land.place_grass(self.surface, self.cell_number, self.cell_size, self.grass_body, 'good')
+                #self.land.place_grass(self.surface, self.cell_number, self.cell_size, self.dead_grass_body, 'bad')
 
                 self.blocks.place_blocks(self.surface, self.cell_size, self.dead_leaf_body, 'leaf')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')

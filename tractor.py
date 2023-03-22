@@ -1,6 +1,5 @@
 import pygame
 import random
-from pygame.math import Vector2
 
 class Tractor:
     def __init__(self, parent_screen, cell_size):
