@@ -4,8 +4,9 @@ class Field:
     def __init__(self, parent_screen):
         self.parent_screen = parent_screen
         self.block = pygame.image.load(r'resources/field.png').convert()
+    #def draw_blocks():
 
-    def place_field(self, field_matrix, parent_screen, cell_size):
+    def place_field(self, field_matrix, parent_screen, cell_size): #drawing blocks
         for m, posY in enumerate(field_matrix):
             for n, posX in enumerate(posY):
                 if field_matrix[m][n] == 1:

@@ -2,31 +2,42 @@ import pygame
 import random
 import tractor
 import field
+import blocks
 from pygame.locals import *
 from datetime import datetime
 
 
 class Game:
     cell_size = 50
-    screen_size = 500
-
-    field_matrix = [[0 for m in range(10)] for n in range(10)]
-    for i in range(10):
-        while True:
-            field_posX = random.randint(0, 9)
-            field_posY = random.randint(0, 9)
-
-            if field_matrix[field_posY][field_posX] == 0:
-                field_matrix[field_posY][field_posX] = 1
-                break
+    cell_number = 15
+    blocks_number = 15
+    block_dict = {}
 
     def __init__(self):
+        self.leaf_body = []
+        self.vege_body = []
+        self.carrot_body = []
+    
         pygame.init()
-        self.surface = pygame.display.set_mode((self.screen_size, self.screen_size))  # initialize a window
+        self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))  # initialize a window
+
+        self.grass_image = pygame.image.load(r'resources/grass3.png').convert()
+        self.grass_image = pygame.transform.scale(self.grass_image, (self.cell_size, self.cell_size))
+
+        self.blocks = blocks.Blocks(self.surface,self.cell_size)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.leaf_body)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.vege_body)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.carrot_body)
 
 
-        self.field = field.Field(self.surface)
-        self.field.place_field(self.field_matrix, self.surface, self.cell_size)
+        self.blocks.place_blocks(self.surface, self.cell_size, self.leaf_body, 'leaf')
+        self.blocks.place_blocks(self.surface, self.cell_size, self.vege_body, 'vege')
+        self.blocks.place_blocks(self.surface, self.cell_size, self.carrot_body, 'carrot')
+
+        for i in range(0, self.cell_number*self.cell_number):
+            x = int(i * self.cell_size)
+            y = int(i * self.cell_size)
+            self.surface.blit(self.grass_image, (x, y))
 
         self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
@@ -41,7 +52,6 @@ class Game:
             clock.tick(60)  # manual fps control not to overwork the computer
             time_now = datetime.now()
 
-    
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if pygame.key.get_pressed()[K_ESCAPE]:
@@ -59,9 +69,21 @@ class Game:
                     running = False
 
                 self.surface.fill((140, 203, 97))  # background color
-                self.field.place_field(self.field_matrix, self.surface, self.cell_size)
 
-                self.field.draw_lines(self.screen_size, self.cell_size)
+                for i in range(0, self.cell_number):
+                    for k in range(0, self.cell_number):
+                        x = int(i * self.cell_size)
+                        y = int(k * self.cell_size)
+                        self.surface.blit(self.grass_image, (x, y))
+                
+
+                #self.blocks.draw_lines(self.cell_number*self.cell_size, self.cell_size)
+
+                self.blocks.place_blocks(self.surface, self.cell_size, self.leaf_body, 'leaf')
+                self.blocks.place_blocks(self.surface, self.cell_size, self.vege_body, 'vege')
+                self.blocks.place_blocks(self.surface, self.cell_size, self.carrot_body, 'carrot')
+
+
                 self.tractor.draw()
                 pygame.display.update()
            
