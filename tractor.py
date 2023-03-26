@@ -15,7 +15,7 @@ class Tractor:
         self.left = pygame.transform.scale(self.left, (cell_size+2, cell_size+2))
         self.right = pygame.transform.scale(self.right, (cell_size+4, cell_size+1))
 
-        self.x = cell_size*2
+        self.x = cell_size*2  # to-check: start pos may be written explicit
         self.y = cell_size*2
         #self.pos = Vector2(self.x, self.y)
         self.angle = 0

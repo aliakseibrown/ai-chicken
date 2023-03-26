@@ -1,3 +1,5 @@
+import os
+
 import pygame
 import random
 import land
@@ -10,7 +12,7 @@ from datetime import datetime
 class Game:
     cell_size = 50
     cell_number = 15        #horizontally 
-    blocks_number = 15
+    blocks_number = 15  # to-check sth is wrong: duplicate(?) and overlap
     
     def __init__(self):
         self.dead_leaf_body = []
@@ -20,7 +22,9 @@ class Game:
         self.dead_grass_body = []
         self.grass_body = []
 
-    
+        self.potato_field = []
+
+
         self.entire_block = {}
 
         pygame.init()
@@ -34,10 +38,16 @@ class Game:
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.stone_body)
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.flower_body)
 
+        self.potato = blocks.Blocks(self.surface, self.cell_size)
+        self.potato.locate_soil('black earth', 6, 1, [])
+
         self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
 
     def run(self):
+        print(self.potato.get_soil_info().get_name())
+        print(self.potato.get_soil_info().get_acidity())
+        print(self.potato.get_soil_info().get_irrigation())
         running = True
         clock = pygame.time.Clock()
         last_time = datetime.now()

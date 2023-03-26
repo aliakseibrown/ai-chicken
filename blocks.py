@@ -1,6 +1,8 @@
 import pygame
 import random
 from pygame.math import Vector2
+import soil
+
 
 class Blocks:
     def __init__(self, parent_screen,cell_size):
@@ -16,6 +18,8 @@ class Blocks:
 
         self.alive_leaf_image = pygame.image.load(r'resources/alive.png').convert_alpha()
         self.alive_leaf_image = pygame.transform.scale(self.alive_leaf_image, (cell_size, cell_size))
+
+        self.soil = soil.Soil()
 
 
     def locate_blocks(self, blocks_number, cell_number, body):
@@ -40,9 +44,25 @@ class Blocks:
                 self.parent_screen.blit(self.stone_image, (x, y))
             if color == 'flower':
                 self.parent_screen.blit(self.flower_image, (x, y))
-            
+
+            # if color == 'potato':
+            #     pass
+
+    def locate_soil(self, name, acidity, irrigation, blocks_number):
+        # for block in blocks_number:
+        self.soil.set_name(name)
+        self.soil.set_irrigation(irrigation)
+        self.soil.set_acidity(acidity)
+
+    def get_soil_info(self):
+        return self.soil
 
     def draw_lines(self, parent_screen, cell_size):  # background lines
         for i in range(1, 10):
             pygame.draw.line(self.parent_screen, (228, 253, 227), (cell_size * i, 0), (cell_size * i, parent_screen), 1)
             pygame.draw.line(self.parent_screen, (228, 253, 227), (0, cell_size * i), (parent_screen, cell_size * i), 1)
+
+
+
+
+

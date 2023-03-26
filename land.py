@@ -19,7 +19,7 @@ class Land:
             x = int(body[0] * cell_size)
             y = int(body[1] * cell_size)
             if(name == 'good'):
-                parent_screen.blit(self.grass_image, (x, y))
+                parent_screen.blit(self.grass_image, (x, y))  # to-check: () redundant parentheses
             if(name == 'bad'):
                 parent_screen.blit(self.bad_grass_image, (x, y))
                 
