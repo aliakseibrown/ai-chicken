@@ -1,158 +1,123 @@
+import os
+
 import pygame
 import random
+import land
+import tractor
+import blocks
 from pygame.locals import *
 from datetime import datetime
 
-#main variables
-class Configurations:
-    cell_size = 50
-    screen_size = 500
-   # def _init_(self): 
-        
-class Lines:
-    def __init__(self, parent_scr):
-        self.parent_scr = parent_scr
-        
-
-    def draw_lines(self):  # background lines
-        conf = Configurations()
-        for i in range(1, 10):
-            pygame.draw.line(self.parent_scr, (228, 253, 227), (conf.cell_size * i, 0), (conf.cell_size * i, conf.screen_size), 1)
-            pygame.draw.line(self.parent_scr, (228, 253, 227), (0, conf.cell_size * i), (conf.screen_size, conf.cell_size * i), 1)
-        #pygame.display.flip()
-
-
-class Tractor:
-    def __init__(self, parent_screen):
-        conf = Configurations()
-        self.parent_screen = parent_screen
-        self.image = pygame.image.load(r'resources/tractor.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (conf.cell_size, conf.cell_size+5))
-        #self.block = pygame.Rect(int(conf.cell_size), int(conf.cell_size), conf.cell_size, conf.cell_size)
-        self.x = conf.cell_size*2
-        self.y = conf.cell_size*2
-        self.angle = 0
-        self.direction = 'up'
-
-    def draw(self):
-        #self.parent_screen.fill((120, 120, 0))  # background color
-        #self.parent_screen.blit(self.block, (self.x, self.y))
-        self.parent_screen.blit(pygame.transform.rotate(self.image, self.angle), (self.x, self.y))  # rotate tractor
-        #pygame.display.flip()  # updating screen
-
-    def move(self, direction):
-        conf = Configurations()
-        if direction == 'up':
-            self.y -= conf.cell_size
-            self.angle = 0
-        if direction == 'down':
-            self.y += conf.cell_size
-            self.angle = 180
-        if direction == 'left':
-            self.x -= conf.cell_size
-            self.angle = 90
-        if direction == 'right':
-            self.x += conf.cell_size
-            self.angle = 270
-        #self.draw()
-
-    def walk(self):
-        choice = ['up', 'down', 'left', 'right']
-
-        if self.x == 450:
-            choice.pop(3)
-        if self.x == 0:
-            choice.pop(2)
-        if self.y == 0:
-            choice.pop(0)
-        if self.y == 450:
-            choice.pop(1)
-
-        self.direction = random.choice(choice)
-        self.move(self.direction)
-
-
-class Field:
-    def __init__(self, parent_screen):
-        self.parent_screen = parent_screen
-        self.block = pygame.image.load(r'resources/field.png').convert()
-
-    def place_field(self, field_matrix):
-        conf = Configurations()
-        for m, posY in enumerate(field_matrix):
-            for n, posX in enumerate(posY):
-                if field_matrix[m][n] == 1:
-                    self.parent_screen.blit(self.block, (n * conf.cell_size, m * conf.cell_size))
-
-        #pygame.display.flip()
-
 
 class Game:
-    field_matrix = [[0 for m in range(10)] for n in range(10)]
-    for i in range(10):
-        while True:
-            field_posX = random.randint(0, 9)
-            field_posY = random.randint(0, 9)
-
-            if field_matrix[field_posY][field_posX] == 0:
-                field_matrix[field_posY][field_posX] = 1
-                break
-
+    cell_size = 50
+    cell_number = 15  # horizontally
+    blocks_number = 15
+    
     def __init__(self):
+
+        self.dead_leaf_body = []
+        self.green_leaf_body = []
+        self.stone_body = []
+        self.flower_body = []
+        self.dead_grass_body = []
+        self.grass_body = []
+
+        self.fawn_seed_body = []
+        self.fawn_wheat_body = []
+
+        self.black_earth_body = []
+        self.green_earth_body = []
+        self.fawn_soil_body = []
+        self.fen_soil_body = []
+        self.allBodyPos = []
+
+        self.entire_block = {}
+
+        # initialize a window
         pygame.init()
-        self.conf = Configurations()
-        # self.screenWidth = 500
-        # self.screenHeight = 500
-        self.surface = pygame.display.set_mode((self.conf.screen_size, self.conf.screen_size))  # initialize a window
-        # self.surface.fill((255, 255, 255))  # background color (overwritten by tractor)
+        self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))
 
-        
+        # finds places for every type soil and grass
+        self.black_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.black_earth.locate_soil(self.black_earth_body)
+        self.green_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.green_earth.locate_soil(self.green_earth_body)
+        self.fawn_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.fawn_soil.locate_soil(self.fawn_soil_body)
+        self.fen_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.fen_soil.locate_soil(self.fen_soil_body)
+        self.grass = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
 
-        self.lines = Lines(self.surface)
-        self.field = Field(self.surface)
-        self.field.place_field(self.field_matrix)
+        self.blocks = blocks.Blocks(self.surface, self.cell_size)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.dead_leaf_body)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.stone_body)
+        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.flower_body)
 
-        self.tractor = Tractor(self.surface)
+        # self.potato = blocks.Blocks(self.surface, self.cell_size)
+        # self.potato.locate_soil('black earth', 6, 1, [])
+
+        self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
 
     def run(self):
+        # print(self.potato.get_soil_info().get_name())
+        # print(self.potato.get_soil_info().get_acidity())
+        # print(self.potato.get_soil_info().get_irrigation())
         running = True
         clock = pygame.time.Clock()
-        last_time = datetime.now()
-        #self.lines.draw_lines()
+        # last_time = datetime.now()
 
         while running:
             clock.tick(60)  # manual fps control not to overwork the computer
-            time_now = datetime.now()
+            # time_now = datetime.now()
 
-    
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if pygame.key.get_pressed()[K_ESCAPE]:
                         running = False
                         # in case we want to use keyboard
                     if pygame.key.get_pressed()[K_UP]:
-                        self.tractor.move('up')
+                        self.tractor.move('up', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_DOWN]:
-                        self.tractor.move('down')
+                        self.tractor.move('down', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_LEFT]:
-                        self.tractor.move('left')
+                        self.tractor.move('left', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_RIGHT]:
-                        self.tractor.move('right')
+                        self.tractor.move('right', self.cell_size, self.cell_number)
+                    if pygame.key.get_pressed()[K_SPACE]:
+                        self.tractor.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
+                        # self.tractor.water(self.grass_body, self.dead_grass_body, self.cell_size)
+                    if pygame.key.get_pressed()[K_q]:
+                        self.tractor.harvest(self.fawn_seed_body, self.fawn_wheat_body, self.cell_size)
+                        self.tractor.put_seed(self.fawn_soil_body, self.fawn_seed_body, self.cell_size)
+
+                        
                 elif event.type == QUIT:
                     running = False
 
-                self.surface.fill((140, 203, 97))  # background color
-                self.field.place_field(self.field_matrix)
-                self.lines.draw_lines()
+                self.surface.fill((123, 56, 51))  # background color
+
+                self.grass.set_and_place_block_of_grass('good')
+                self.black_earth.place_soil(self.black_earth_body, 'black_earth')
+                self.green_earth.place_soil(self.green_earth_body, 'green_earth')
+                self.fawn_soil.place_soil(self.fawn_soil_body, 'fawn_soil')
+                self.fen_soil.place_soil(self.fen_soil_body, 'fen_soil')
+
+                #plants examples
+                self.blocks.place_blocks(self.surface, self.cell_size, self.dead_leaf_body, 'leaf')
+                self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')
+                self.blocks.place_blocks(self.surface, self.cell_size, self.stone_body, 'stone')
+                self.blocks.place_blocks(self.surface, self.cell_size, self.flower_body, 'flower')
+
+                #seeds
+                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_seed_body, 'fawn_seed')
+
+                #wheat
+                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_wheat_body, 'fawn_wheat')
+
                 self.tractor.draw()
                 pygame.display.update()
-           
-
-            # if (time_now - last_time).total_seconds() > 1:  # tractor moves every 1 sec
-            #     last_time = datetime.now()
-                #self.tractor.walk()
-                #print(f'x, y = ({int(self.tractor.x / 50)}, {int(self.tractor.y / 50)})')
 
 
 if __name__ == '__main__':
