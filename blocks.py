@@ -21,7 +21,6 @@ class Blocks:
 
         self.soil = soil.Soil()
 
-
     def locate_blocks(self, blocks_number, cell_number, body):
         for i in range(blocks_number):
             self.x = random.randint(0, cell_number-1)
@@ -30,7 +29,6 @@ class Blocks:
             body.append(self.pos)
             #entire_block.update({self.x : 1})                # for now it may lay on each other,
         #print(entire_block)
- 
 
     def place_blocks(self, parent_screen, cell_size, body, color):     #drawing blocks
         for block in body:

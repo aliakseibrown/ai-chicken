@@ -4,6 +4,7 @@ import random
 class Tractor:
     def __init__(self, parent_screen, cell_size):
         self.parent_screen = parent_screen
+        self.lastVisitedBlocks = []  # tractor stores last 3 visited blocks
 
         self.up = pygame.image.load(r'resources/up.png').convert_alpha()
         self.down = pygame.image.load(r'resources/down.png').convert_alpha()
@@ -21,6 +22,8 @@ class Tractor:
         self.angle = 0
         self.direction = 'up'
         self.image = self.down
+
+        self.lastVisitedBlocks = []  # as tractor moves it stores last 3 coordinates
 
 
     def draw(self):
