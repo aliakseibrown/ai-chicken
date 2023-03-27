@@ -15,6 +15,7 @@ class Game:
     blocks_number = 15
     
     def __init__(self):
+
         self.dead_leaf_body = []
         self.green_leaf_body = []
         self.stone_body = []
@@ -22,8 +23,11 @@ class Game:
         self.dead_grass_body = []
         self.grass_body = []
 
+        self.fawn_seed_body = []
+        self.fawn_wheat_body = []
+
         self.black_earth_body = []
-        self.brown_earth_body = []
+        self.green_earth_body = []
         self.fawn_soil_body = []
         self.fen_soil_body = []
         self.allBodyPos = []
@@ -37,8 +41,8 @@ class Game:
         # finds places for every type soil and grass
         self.black_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
         self.black_earth.locate_soil(self.black_earth_body)
-        self.brown_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
-        self.brown_earth.locate_soil(self.brown_earth_body)
+        self.green_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.green_earth.locate_soil(self.green_earth_body)
         self.fawn_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
         self.fawn_soil.locate_soil(self.fawn_soil_body)
         self.fen_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
@@ -50,8 +54,8 @@ class Game:
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.stone_body)
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.flower_body)
 
-        self.potato = blocks.Blocks(self.surface, self.cell_size)
-        self.potato.locate_soil('black earth', 6, 1, [])
+        # self.potato = blocks.Blocks(self.surface, self.cell_size)
+        # self.potato.locate_soil('black earth', 6, 1, [])
 
         self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
@@ -84,22 +88,33 @@ class Game:
                     if pygame.key.get_pressed()[K_SPACE]:
                         self.tractor.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
                         # self.tractor.water(self.grass_body, self.dead_grass_body, self.cell_size)
+                    if pygame.key.get_pressed()[K_q]:
+                        self.tractor.harvest(self.fawn_seed_body, self.fawn_wheat_body, self.cell_size)
+                        self.tractor.put_seed(self.fawn_soil_body, self.fawn_seed_body, self.cell_size)
+
                         
                 elif event.type == QUIT:
                     running = False
 
-                self.surface.fill((140, 203, 97))  # background color
+                self.surface.fill((123, 56, 51))  # background color
 
                 self.grass.set_and_place_block_of_grass('good')
                 self.black_earth.place_soil(self.black_earth_body, 'black_earth')
-                self.brown_earth.place_soil(self.brown_earth_body, 'brown_earth')
+                self.green_earth.place_soil(self.green_earth_body, 'green_earth')
                 self.fawn_soil.place_soil(self.fawn_soil_body, 'fawn_soil')
                 self.fen_soil.place_soil(self.fen_soil_body, 'fen_soil')
 
+                #plants examples
                 self.blocks.place_blocks(self.surface, self.cell_size, self.dead_leaf_body, 'leaf')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.stone_body, 'stone')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.flower_body, 'flower')
+
+                #seeds
+                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_seed_body, 'fawn_seed')
+
+                #wheat
+                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_wheat_body, 'fawn_wheat')
 
                 self.tractor.draw()
                 pygame.display.update()

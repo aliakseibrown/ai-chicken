@@ -19,6 +19,13 @@ class Blocks:
         self.alive_leaf_image = pygame.image.load(r'resources/alive.png').convert_alpha()
         self.alive_leaf_image = pygame.transform.scale(self.alive_leaf_image, (cell_size, cell_size))
 
+        self.fawn_seed_image = pygame.image.load(r'resources/fawn_seed.png').convert_alpha()
+        self.fawn_seed_image = pygame.transform.scale(self.fawn_seed_image, (cell_size, cell_size))
+
+        self.fawn_wheat_image = pygame.image.load(r'resources/fawn_wheat.png').convert_alpha()
+        self.fawn_wheat_image = pygame.transform.scale(self.fawn_wheat_image, (cell_size, cell_size))
+
+
         self.soil = soil.Soil()
 
     def locate_blocks(self, blocks_number, cell_number, body):
@@ -42,6 +49,12 @@ class Blocks:
                 self.parent_screen.blit(self.stone_image, (x, y))
             if color == 'flower':
                 self.parent_screen.blit(self.flower_image, (x, y))
+            if color == 'fawn_seed':
+                self.parent_screen.blit(self.fawn_seed_image, (x, y))
+            if color == 'fawn_wheat':
+                self.parent_screen.blit(self.fawn_wheat_image, (x, y))
+
+
 
             # if color == 'potato':
             #     pass

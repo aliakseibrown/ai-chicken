@@ -22,7 +22,7 @@ class Tractor:
         self.angle = 0
         self.direction = 'up'
         self.image = self.down
-
+        self.step = 0
         self.lastVisitedBlocks = []  # as tractor moves it stores last 3 coordinates
 
 
@@ -47,7 +47,10 @@ class Tractor:
             if self.x != (cell_number-1)*cell_size:
                 self.x += cell_size
             self.image = self.right
+        self.step = self.step + 1
         print(self.x, self.y)
+        print(self.step)
+        
 
     def water(self, body_before, body_after, cell_size):
         self.pos = [self.x/cell_size, self.y/cell_size]
@@ -56,6 +59,23 @@ class Tractor:
             body_after.append(self.pos)
             print('HERE!')
         #print(body)
+
+    def put_seed(self, body, seed_body, cell_size):
+        #self.step = 0
+        self.pos = [self.x/cell_size, self.y/cell_size]
+        if self.pos in body:
+            #body.remove(self.pos)
+            seed_body.append(self.pos)
+            print('HERE IS THE SEED!')
+
+    def harvest(self, seed_body, wheat_body, cell_size):
+        self.pos = [self.x/cell_size, self.y/cell_size]
+        if self.pos in seed_body:
+            seed_body.remove(self.pos)
+            wheat_body.append(self.pos)
+            print('HERE IS THE WHEAT!')
+
+
 
     def walk(self):
         choice = ['up', 'down', 'left', 'right']
