@@ -54,6 +54,8 @@ class Search:
             explored.append(elem)
 
             for (action, state_x, state_y, state_angle) in self.succ(elem.state):
+                if state_x < 0 or state_y < 0:  # check if any of the values is negative
+                    continue
                 if [state_x, state_y, state_angle] not in fringe and [state_x, state_y, state_angle] not in explored:
                     x = Node([state_x, state_y, state_angle])
                     x.parent = elem
