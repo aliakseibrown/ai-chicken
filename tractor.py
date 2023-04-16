@@ -19,7 +19,7 @@ class Tractor:
         self.x = cell_size*2  # to-check: start pos may be written explicit
         self.y = cell_size*2
         #self.pos = Vector2(self.x, self.y)
-        self.angle = 0
+        self.angle = 180
         self.direction = 'up'
         self.image = self.down
         self.step = 0
@@ -31,22 +31,49 @@ class Tractor:
 
 
     def move(self, direction, cell_size, cell_number):
-        if direction == 'up':
-            if self.y != 0:
+        # if direction == 'up':
+        #     if self.y != 0:
+        #         self.y -= cell_size
+        #     self.image = self.up
+        # if direction == 'down':
+        #     if self.y != (cell_number-1)*cell_size:
+        #         self.y += cell_size
+        #     self.image = self.down
+        # if direction == 'left':
+        #     if self.x != 0:
+        #         self.x -= cell_size
+        #     self.image = self.left
+        # if direction == 'right':
+        #     if self.x != (cell_number-1)*cell_size:
+        #         self.x += cell_size
+        #     self.image = self.right
+        if direction == 'move':
+            if self.angle == 0 and self.y != 0:
                 self.y -= cell_size
-            self.image = self.up
-        if direction == 'down':
-            if self.y != (cell_number-1)*cell_size:
-                self.y += cell_size
-            self.image = self.down
-        if direction == 'left':
-            if self.x != 0:
-                self.x -= cell_size
-            self.image = self.left
-        if direction == 'right':
-            if self.x != (cell_number-1)*cell_size:
+            if self.angle == 90 and self.x != (cell_number-1)*cell_size:
                 self.x += cell_size
+            if self.angle == 180 and self.y != (cell_number-1)*cell_size:
+                self.y += cell_size
+            if self.angle == 270 and self.x != 0:
+                self.x -= cell_size
+        if direction == 'right':
+            self.angle += 90
+            if self.angle == 360:
+                self.angle = 0
+        if direction == 'left':
+            self.angle -= 90
+            if self.angle == -90:
+                self.angle = 270
+
+        if self.angle == 0:
+            self.image = self.up
+        if self.angle == 90:
             self.image = self.right
+        if self.angle == 180:
+            self.image = self.down
+        if self.angle == 270:
+            self.image = self.left
+
         self.step = self.step + 1
         print(self.x, self.y)
         print(self.step)

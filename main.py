@@ -78,9 +78,10 @@ class Game:
                         running = False
                         # in case we want to use keyboard
                     if pygame.key.get_pressed()[K_UP]:
-                        self.tractor.move('up', self.cell_size, self.cell_number)
-                    if pygame.key.get_pressed()[K_DOWN]:
-                        self.tractor.move('down', self.cell_size, self.cell_number)
+                        # self.tractor.move('up', self.cell_size, self.cell_number)
+                        self.tractor.move('move', self.cell_size, self.cell_number)
+                    # if pygame.key.get_pressed()[K_DOWN]:
+                    #     self.tractor.move('down', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_LEFT]:
                         self.tractor.move('left', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_RIGHT]:
