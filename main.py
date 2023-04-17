@@ -69,7 +69,7 @@ class Game:
         move_tractor_event = pygame.USEREVENT + 1
         pygame.time.set_timer(move_tractor_event, 1000)  # tractor moves every 1000 ms
         tractor_next_moves = []
-        graph_search_object = graph_search.Search(self.cell_size)
+        graph_search_object = graph_search.Search(self.cell_size, self.cell_number)
 
         while running:
             clock.tick(60)  # manual fps control not to overwork the computer
