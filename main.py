@@ -1,12 +1,11 @@
 import os
-
 import pygame
 import random
 import land
 import tractor
 import blocks
+import graph_search
 from pygame.locals import *
-from datetime import datetime
 
 
 class Game:
@@ -66,12 +65,14 @@ class Game:
         # print(self.potato.get_soil_info().get_irrigation())
         running = True
         clock = pygame.time.Clock()
-        # last_time = datetime.now()
+
+        move_tractor_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(move_tractor_event, 1000)  # tractor moves every 1000 ms
+        tractor_next_moves = []
+        graph_search_object = graph_search.Search(self.cell_size)
 
         while running:
             clock.tick(60)  # manual fps control not to overwork the computer
-            # time_now = datetime.now()
-
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if pygame.key.get_pressed()[K_ESCAPE]:
@@ -92,8 +93,14 @@ class Game:
                     if pygame.key.get_pressed()[K_q]:
                         self.tractor.harvest(self.fawn_seed_body, self.fawn_wheat_body, self.cell_size)
                         self.tractor.put_seed(self.fawn_soil_body, self.fawn_seed_body, self.cell_size)
-
-                        
+                if event.type == move_tractor_event:
+                    if len(tractor_next_moves) == 0:
+                        random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
+                        random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
+                        tractor_next_moves = graph_search_object.graphsearch(
+                            [self.tractor.x, self.tractor.y, self.tractor.angle], [random_x, random_y])
+                    else:
+                        self.tractor.move(tractor_next_moves.pop(0)[0], self.cell_size, self.cell_number)
                 elif event.type == QUIT:
                     running = False
 
@@ -105,16 +112,16 @@ class Game:
                 self.fawn_soil.place_soil(self.fawn_soil_body, 'fawn_soil')
                 self.fen_soil.place_soil(self.fen_soil_body, 'fen_soil')
 
-                #plants examples
+                # plants examples
                 self.blocks.place_blocks(self.surface, self.cell_size, self.dead_leaf_body, 'leaf')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.stone_body, 'stone')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.flower_body, 'flower')
 
-                #seeds
+                # seeds
                 self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_seed_body, 'fawn_seed')
 
-                #wheat
+                # wheat
                 self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_wheat_body, 'fawn_wheat')
 
                 self.tractor.draw()
