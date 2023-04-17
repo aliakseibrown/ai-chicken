@@ -17,25 +17,21 @@ class Search:
         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
         match(angles[angle]):
             case 'UP':
-                if y != 0:
-                    return [['move', x, y - self.cell_size, 0], ['left', x, y, 270], ['right', x, y, 90]]
-                else:
-                    return [['left', x, y, 270], ['right', x, y, 90]]
+                possible = [['left', x, y, 270], ['right', x, y, 90]]
+                if y != 0: possible.append(['move', x, y - self.cell_size, 0])
+                return possible
             case 'RIGHT':
-                if x != self.cell_size*(self.cell_number-1):
-                    return [['move', x + self.cell_size, y, 90], ['left', x, y, 0], ['right', x, y, 180]]
-                else:
-                    return [['left', x, y, 0], ['right', x, y, 180]]
+                possible = [['left', x, y, 0], ['right', x, y, 180]]
+                if x != self.cell_size*(self.cell_number-1): possible.append(['move', x + self.cell_size, y, 90])
+                return possible
             case 'DOWN':
-                if y != self.cell_size*(self.cell_number-1):
-                    return [['move', x, y + self.cell_size, 180], ['left', x, y, 90], ['right', x, y, 270]]
-                else:
-                    return [['left', x, y, 90], ['right', x, y, 270]]
+                possible = [['left', x, y, 90], ['right', x, y, 270]]
+                if y != self.cell_size*(self.cell_number-1): possible.append(['move', x, y + self.cell_size, 180])
+                return possible
             case 'LEFT':
-                if x != 0:
-                    return [['move', x - self.cell_size, y, 270], ['left', x, y, 180], ['right', x, y, 0]]
-                else:
-                    return [['left', x, y, 180], ['right', x, y, 0]]
+                possible = [['left', x, y, 180], ['right', x, y, 0]]
+                if x != 0: possible.append(['move', x - self.cell_size, y, 270])
+                return possible
 
     def graphsearch(self, istate, goaltest):
         x = istate[0]
