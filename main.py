@@ -97,6 +97,7 @@ class Game:
                     if len(tractor_next_moves) == 0:
                         random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
                         random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
+                        print("Generated target: ",random_x, random_y)
                         tractor_next_moves = graph_search_object.graphsearch(
                             [self.tractor.x, self.tractor.y, self.tractor.angle], [random_x, random_y])
                     else:
