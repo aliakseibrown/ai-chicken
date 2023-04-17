@@ -6,22 +6,36 @@ class Node:
 
 
 class Search:
-    def __init__(self, cell_size):
+    def __init__(self, cell_size, cell_number):
         self.cell_size = cell_size
+        self.cell_number = cell_number
 
-    # WARNING! IT EXCEEDS THE PLANE!!!
-    def succ(self, state):  # successor function
+    def succ(self, state):
         x = state[0]
         y = state[1]
         angle = state[2]
-        if angle == 0:
-            return [['move', x, y - self.cell_size, 0], ['left', x, y, 270], ['right', x, y, 90]]
-        if angle == 90:
-            return [['move', x + self.cell_size, y, 90], ['left', x, y, 0], ['right', x, y, 180]]
-        if angle == 180:
-            return [['move', x, y + self.cell_size, 180], ['left', x, y, 90], ['right', x, y, 270]]
-        if angle == 270:
-            return [['move', x - self.cell_size, y, 270], ['left', x, y, 180], ['right', x, y, 0]]
+        angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
+        match(angles[angle]):
+            case 'UP':
+                if y != 0:
+                    return [['move', x, y - self.cell_size, 0], ['left', x, y, 270], ['right', x, y, 90]]
+                else:
+                    return [['left', x, y, 270], ['right', x, y, 90]]
+            case 'RIGHT':
+                if x != self.cell_size*(self.cell_number-1):
+                    return [['move', x + self.cell_size, y, 90], ['left', x, y, 0], ['right', x, y, 180]]
+                else:
+                    return [['left', x, y, 0], ['right', x, y, 180]]
+            case 'DOWN':
+                if y != self.cell_size*(self.cell_number-1):
+                    return [['move', x, y + self.cell_size, 180], ['left', x, y, 90], ['right', x, y, 270]]
+                else:
+                    return [['left', x, y, 90], ['right', x, y, 270]]
+            case 'LEFT':
+                if x != 0:
+                    return [['move', x - self.cell_size, y, 270], ['left', x, y, 180], ['right', x, y, 0]]
+                else:
+                    return [['left', x, y, 180], ['right', x, y, 0]]
 
     def graphsearch(self, istate, goaltest):
         x = istate[0]
@@ -55,8 +69,6 @@ class Search:
             explored.append(elem.state)
 
             for (action, state_x, state_y, state_angle) in self.succ(elem.state):
-                if state_x < 0 or state_y < 0:  # check if any of the values are negative
-                    continue
                 if [state_x, state_y, state_angle] not in fringe_state and \
                         [state_x, state_y, state_angle] not in explored:
                     x = Node([state_x, state_y, state_angle])
@@ -64,7 +76,3 @@ class Search:
                     x.action = action
                     fringe.append(x)
                     fringe_state.append(x.state)
-
-
-se = Search(50)
-se.graphsearch(istate=[50, 50, 0], goaltest=[150, 250])
