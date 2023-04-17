@@ -9,19 +9,31 @@ class Search:
     def __init__(self, cell_size):
         self.cell_size = cell_size
 
-    # WARNING! IT EXCEEDS THE PLANE!!!
-    def succ(self, state):  # successor function
+    #this method needs to check the size of the plane - for now, it assumes 15x15, like in main.py
+    def succ(self, state):
         x = state[0]
         y = state[1]
         angle = state[2]
-        if angle == 0:
-            return [['move', x, y - self.cell_size, 0], ['left', x, y, 270], ['right', x, y, 90]]
-        if angle == 90:
-            return [['move', x + self.cell_size, y, 90], ['left', x, y, 0], ['right', x, y, 180]]
-        if angle == 180:
-            return [['move', x, y + self.cell_size, 180], ['left', x, y, 90], ['right', x, y, 270]]
-        if angle == 270:
-            return [['move', x - self.cell_size, y, 270], ['left', x, y, 180], ['right', x, y, 0]]
+        if angle == 0: # up
+            if y != 0: #this can stay as 0, negative values are not tolerated
+                return [['move', x, y - self.cell_size, 0], ['left', x, y, 270], ['right', x, y, 90]]
+            else:
+                return [['left', x, y, 270], ['right', x, y, 90]]
+        if angle == 90: # right
+            if x != 700: #this needs to be changed to relative once size of plane is read by succ (parse in Search constructor?)
+                return [['move', x + self.cell_size, y, 90], ['left', x, y, 0], ['right', x, y, 180]]
+            else:
+                return [['left', x, y, 0], ['right', x, y, 180]]
+        if angle == 180: # down
+            if y != 700: #this needs to be changed to relative once size of plane is read by succ (parse in Search constructor?)
+                return [['move', x, y + self.cell_size, 180], ['left', x, y, 90], ['right', x, y, 270]]
+            else:
+                return [['left', x, y, 90], ['right', x, y, 270]]
+        if angle == 270: # left
+            if x != 0: #this can stay as 0, negative values are not tolerated
+                return [['move', x - self.cell_size, y, 270], ['left', x, y, 180], ['right', x, y, 0]]
+            else:
+                return [['left', x, y, 180], ['right', x, y, 0]]
 
     def graphsearch(self, istate, goaltest):
         x = istate[0]
