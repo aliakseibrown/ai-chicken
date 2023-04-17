@@ -14,23 +14,22 @@ class Search:
         x = state[0]
         y = state[1]
         angle = state[2]
-        angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
-        match(angles[angle]):
+        match(angle):
             case 'UP':
-                possible = [['left', x, y, 270], ['right', x, y, 90]]
-                if y != 0: possible.append(['move', x, y - self.cell_size, 0])
+                possible = [['left', x, y, 'LEFT'], ['right', x, y, 'RIGHT']]
+                if y != 0: possible.append(['move', x, y - self.cell_size, 'UP'])
                 return possible
             case 'RIGHT':
-                possible = [['left', x, y, 0], ['right', x, y, 180]]
-                if x != self.cell_size*(self.cell_number-1): possible.append(['move', x + self.cell_size, y, 90])
+                possible = [['left', x, y, 'UP'], ['right', x, y, 'DOWN']]
+                if x != self.cell_size*(self.cell_number-1): possible.append(['move', x + self.cell_size, y, 'RIGHT'])
                 return possible
             case 'DOWN':
-                possible = [['left', x, y, 90], ['right', x, y, 270]]
-                if y != self.cell_size*(self.cell_number-1): possible.append(['move', x, y + self.cell_size, 180])
+                possible = [['left', x, y, 'RIGHT'], ['right', x, y, 'LEFT']]
+                if y != self.cell_size*(self.cell_number-1): possible.append(['move', x, y + self.cell_size, 'DOWN'])
                 return possible
             case 'LEFT':
-                possible = [['left', x, y, 180], ['right', x, y, 0]]
-                if x != 0: possible.append(['move', x - self.cell_size, y, 270])
+                possible = [['left', x, y, 'DOWN'], ['right', x, y, 'UP']]
+                if x != 0: possible.append(['move', x - self.cell_size, y, 'LEFT'])
                 return possible
 
     def graphsearch(self, istate, goaltest):
@@ -54,7 +53,7 @@ class Search:
             # print(elem.state[0], elem.state[1], elem.state[2])
             if elem.state[0] == goaltest[0] and elem.state[1] == goaltest[1]:  # checks if we reached the given point
                 steps = []
-                while elem.parent != '':
+                while elem.parent: 
                     steps.append([elem.action, elem.state[0], elem.state[1]])  # should return only elem.action in prod
                     elem = elem.parent
 

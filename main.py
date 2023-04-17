@@ -98,8 +98,10 @@ class Game:
                         random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
                         random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
                         print("Generated target: ",random_x, random_y)
+                        # below line should be later moved into tractor.py
+                        angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         tractor_next_moves = graph_search_object.graphsearch(
-                            [self.tractor.x, self.tractor.y, self.tractor.angle], [random_x, random_y])
+                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y])
                     else:
                         self.tractor.move(tractor_next_moves.pop(0)[0], self.cell_size, self.cell_number)
                 elif event.type == QUIT:
