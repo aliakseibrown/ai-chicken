@@ -76,7 +76,3 @@ class Search:
                     x.action = action
                     fringe.append(x)
                     fringe_state.append(x.state)
-
-
-se = Search(50)
-se.graphsearch(istate=[50, 50, 0], goaltest=[150, 250])
