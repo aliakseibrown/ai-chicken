@@ -26,6 +26,8 @@ class Blocks:
         self.fawn_wheat_image = pygame.image.load(r'resources/fawn_wheat.png').convert_alpha()
         self.fawn_wheat_image = pygame.transform.scale(self.fawn_wheat_image, (cell_size, cell_size))
 
+        self.red_image = pygame.image.load(r'resources/redBush.png').convert_alpha()
+        self.red_image = pygame.transform.scale(self.red_image, (cell_size, cell_size))
 
         self.soil = soil.Soil()
 
@@ -59,6 +61,8 @@ class Blocks:
                 self.parent_screen.blit(self.fawn_seed_image, (x, y))
             if color == 'fawn_wheat':
                 self.parent_screen.blit(self.fawn_wheat_image, (x, y))
+            if color == 'red':
+                self.parent_screen.blit(self.red_image, (x, y))
 
 
 

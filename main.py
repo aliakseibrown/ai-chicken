@@ -11,7 +11,7 @@ from pygame.locals import *
 class Game:
     cell_size = 50
     cell_number = 15  # horizontally
-    blocks_number = 15
+    blocks_number = 20
     
     def __init__(self):
 
@@ -21,6 +21,7 @@ class Game:
         self.flower_body = []
         self.dead_grass_body = []
         self.grass_body = []
+        self.red_block = [] #aim block
 
         self.fawn_seed_body = []
         self.fawn_wheat_body = []
@@ -53,6 +54,8 @@ class Game:
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.stone_body)
         self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.flower_body)
 
+        #self.blocks.locate_blocks(1, self.cell_number, self.red_block)
+
         # self.potato = blocks.Blocks(self.surface, self.cell_size)
         # self.potato.locate_soil('black earth', 6, 1, [])
 
@@ -67,7 +70,7 @@ class Game:
         clock = pygame.time.Clock()
 
         move_tractor_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_tractor_event, 1000)  # tractor moves every 1000 ms
+        pygame.time.set_timer(move_tractor_event, 150)  # tractor moves every 1000 ms
         tractor_next_moves = []
         astar_search_object = astar_search.Search(self.cell_size, self.cell_number)
 
@@ -98,18 +101,20 @@ class Game:
                         random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
                         random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
                         print("Generated target: ",random_x, random_y)
+                        if self.red_block:
+                            self.red_block.pop()
+                        self.red_block.append([random_x/50, random_y/50])
                         # below line should be later moved into tractor.py
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         #bandaid to know about stones
                         tractor_next_moves = astar_search_object.astarsearch(
-                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.blocks.stones, self.flower_body)
+                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.stone_body, self.flower_body)
                     else:
                         self.tractor.move(tractor_next_moves.pop(0)[0], self.cell_size, self.cell_number)
                 elif event.type == QUIT:
                     running = False
 
                 self.surface.fill((123, 56, 51))  # background color
-
                 self.grass.set_and_place_block_of_grass('good')
                 self.black_earth.place_soil(self.black_earth_body, 'black_earth')
                 self.green_earth.place_soil(self.green_earth_body, 'green_earth')
@@ -121,6 +126,8 @@ class Game:
                 self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.stone_body, 'stone')
                 self.blocks.place_blocks(self.surface, self.cell_size, self.flower_body, 'flower')
+
+                self.blocks.place_blocks(self.surface, self.cell_size, self.red_block, 'red')
 
                 # seeds
                 self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_seed_body, 'fawn_seed')

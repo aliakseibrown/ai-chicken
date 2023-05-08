@@ -36,8 +36,8 @@ class Search:
         # cost = node.distance
         cost = 0
         # cost += 10 if stones[node.state[0], node.state[1]] == 1 else 1
-        cost += 1000000 if (node.state[0], node.state[1]) in stones else 1
-        cost += 30 if (node.state[0], node.state[1]) in flowers else 1
+        cost += 1000 if (node.state[0], node.state[1]) in stones else 1
+        cost += 30 if ((node.state[0]), (node.state[1])) in flowers else 1
 
         if node.parent:
             node = node.parent
