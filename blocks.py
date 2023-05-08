@@ -5,6 +5,7 @@ import soil
 
 
 class Blocks:
+
     def __init__(self, parent_screen,cell_size):
         self.parent_screen = parent_screen
         self.flower_image = pygame.image.load(r'resources/flower.png').convert_alpha()
@@ -28,6 +29,9 @@ class Blocks:
 
         self.soil = soil.Soil()
 
+        self.stones = set()
+        #bandaid to let astar know about stones
+
     def locate_blocks(self, blocks_number, cell_number, body):
         for i in range(blocks_number):
             self.x = random.randint(0, cell_number-1)
@@ -47,6 +51,8 @@ class Blocks:
                 self.parent_screen.blit(self.alive_leaf_image, (x, y))
             if color == 'stone':
                 self.parent_screen.blit(self.stone_image, (x, y))
+                #bandaid to let astar know about stones
+                self.stones.add((x, y))
             if color == 'flower':
                 self.parent_screen.blit(self.flower_image, (x, y))
             if color == 'fawn_seed':
