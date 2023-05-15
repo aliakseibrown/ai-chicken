@@ -70,7 +70,7 @@ class Game:
         clock = pygame.time.Clock()
 
         move_tractor_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_tractor_event, 150)  # tractor moves every 1000 ms
+        pygame.time.set_timer(move_tractor_event, 100)  # tractor moves every 1000 ms
         tractor_next_moves = []
         astar_search_object = astar_search.Search(self.cell_size, self.cell_number)
 
@@ -108,7 +108,7 @@ class Game:
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         #bandaid to know about stones
                         tractor_next_moves = astar_search_object.astarsearch(
-                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.stone_body, self.flower_body)
+                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.blocks.stones, self.flower_body)
                     else:
                         self.tractor.move(tractor_next_moves.pop(0)[0], self.cell_size, self.cell_number)
                 elif event.type == QUIT:
