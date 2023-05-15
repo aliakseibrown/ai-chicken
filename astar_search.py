@@ -37,7 +37,7 @@ class Search:
         cost = 0
         # cost += 10 if stones[node.state[0], node.state[1]] == 1 else 1
         cost += 1000 if (node.state[0], node.state[1]) in stones else 1
-        cost += 30 if ((node.state[0]), (node.state[1])) in flowers else 1
+        cost += 300 if ((node.state[0]), (node.state[1])) in flowers else 1
 
         if node.parent:
             node = node.parent
@@ -48,7 +48,7 @@ class Search:
         return abs(node.state[0] - goal[0]) + abs(node.state[1] - goal[1])
 
     #bandaid to know about stones
-    def astarsearch(self, istate, goaltest, stones, flowers):
+    def astarsearch(self, istate, goaltest, cStones, cFlowers):
         
         #to be expanded
         def cost_old(x, y):
@@ -61,6 +61,11 @@ class Search:
         x = istate[0]
         y = istate[1]
         angle = istate[2]
+
+        stones = [(x*50, y*50) for (x, y) in cStones]
+        flowers = [(x*50, y*50) for (x, y) in cFlowers]
+
+        print(stones)
 
         # fringe = [(Node([x, y, angle]), cost_old(x, y))]  # queue (moves/states to check)
         fringe = [(Node([x, y, angle]))]  # queue (moves/states to check)
