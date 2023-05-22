@@ -20,10 +20,10 @@ examples = [
 attributes = ['typ_gleby', 'wilgotność', 'zawartość_składników', 'kolor']
 
 # Tworzenie obiektu TreeLearn i nauka drzewa decyzyjnego
-tree_learner = TreeLearn()
-default_class = 'nieznane'
+# tree_learner = TreeLearn()
+# default_class = 'nieznane'
 
-tree_learner.train(examples, attributes, default_class)
+# tree_learner.train(examples, attributes, default_class)
 
 class TreeLearn:
     def __init__(self):
