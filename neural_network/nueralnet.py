@@ -1,16 +1,25 @@
 #imports
+import os
+import torch
+import torch.nn as nn
+import torch.optim as optim #optimisation algorithmes
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
+from numpy import mean, std 
+import torchvision.datasets as datasets #import datsets 
+import torchvision.transforms as transforms
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
-import torchvision.datasets as datasets
-import torchvision.transforms as transforms
+from torchvision import datasets, models, transforms
+import time
+import os
+import copy
 
 #create fully connected network
 class NN(nn.Module):
     def __init__(self, input_size, num_classes): #1 layer (28x28 = 784 nodes)
-        super(NN,self)._init_()
+        super(NN,self).__init__()
         self.fc1 = nn.Linear(input_size, 50)
         self.fc2 = nn.Linear(50,num_classes)
 
@@ -18,10 +27,6 @@ class NN(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
-
-# model = NN(784, 10)
-# x = torch.rand(64, 784)
-# print(model(x).shape)
 
 #set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -32,23 +37,47 @@ num_classes = 10
 learning_rate = 0.001
 batch_size = 64
 num_epochs = 1
+# Define data transformations
+data_transforms = {
+    "train": transforms.Compose([
+        transforms.RandomResizedCrop(224),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]),
+    "validation": transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])
+}
 
-#load data
-train_dataset = datasets.MNIST(root='dataset/', train = True, transform = transforms.toTensor(), download = True)
-train_loader = DataLoader(dataset= train_dataset, batch_size = batch_size, shuffle = True)
-test_dataset = datasets.MNIST(root='dataset/', train = False, transform = transforms.toTensor(), download = True)
-test_loader = DataLoader(dataset= test_dataset, batch_size = batch_size, shuffle = True)
+# Set the path to your vegetable images folder
+data_dir = "neural_network/dataset/vegetables"
 
+# Load the dataset from the folder
+image_datasets = {x: datasets.ImageFolder(f"{data_dir}/{x}", data_transforms[x])
+                  for x in ["train", "validation"]}
+dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4, shuffle=True, num_workers=4)
+               for x in ["train", "validation"]}
+dataset_sizes = {x: len(image_datasets[x]) for x in ["train", "validation"]}
+class_names = image_datasets["train"].classes
+num_classes = len(class_names)
 
 #initialize network 
-model = NN(input_size=input_size, num_classes=num_classes).to(device)
+#model = NN(input_size=input_size, num_classes=num_classes).to(device)
+model = models.resnet18(pretrained=True)
+num_ftrs = model.fc.in_features
+model.fc = nn.Linear(num_ftrs, num_classes)
+model = model.to(device)
 
 #loss and optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 #train network
-for epoch in range(num_epochs):
+for epoch in range(num_epochs): #epoch is a number of all pictures in dataset
     for batch_idx, (data, targets) in enumerate(train_loader):
         #get data to cuda if possible
         data = data.to(device = device)
@@ -95,7 +124,6 @@ def check_accuracy(loader, model):
         print(f'Got {num_correct} / {num_samples} with accuracy {float(num_correct)/float(num_samples)*100:.2f}')
              
     model.train()
-    return acc
   
 check_accuracy(train_loader, model) 
 check_accuracy(test_loader, model)
