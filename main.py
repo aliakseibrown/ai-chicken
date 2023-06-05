@@ -113,13 +113,13 @@ class Game:
                         #bandaid to know about stones
                         tractor_next_moves = astar_search_object.astarsearch(
                             [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.stone_body, self.flower_body)
-                        current_veggie = next(os.walk('./neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./neural_network/images/test'))[1]))]
+                        current_veggie = next(os.walk('./neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./neural_network/images/test'))[1])-1)]
                         if(current_veggie in veggies_debug):
                             veggies_debug[current_veggie]+=1
                         else:
                             veggies_debug[current_veggie] = 1
 
-                        current_veggie_example = next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2]))]
+                        current_veggie_example = next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2])-1)]
                         predicted_veggie = neural_network.inference.main(f"./neural_network/images/test/{current_veggie}/{current_veggie_example}")
                         if predicted_veggie in veggies:
                             veggies[predicted_veggie]+=1
