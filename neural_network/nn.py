@@ -35,7 +35,9 @@ def main():
                    for x in ["train", "validation"]}
     dataset_sizes = {x: len(image_datasets[x]) for x in ["train", "validation"]}
     class_names = image_datasets["train"].classes
+    print(class_names)
     num_classes = len(class_names)
+    print(num_classes)
 
     # Load a pre-trained ResNet model
     model = models.resnet18(pretrained=True)
@@ -47,10 +49,16 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
+    # Load the previously trained model state
+    #checkpoint = torch.load("neural_network/save/trained_model.pth")
+    #model.load_state_dict(checkpoint)
+
     # Train the model
     def train_model(model, criterion, optimizer, num_epochs=2):
         best_model_wts = None  # Initialize the variable
         best_acc = 0.0
+
+        
 
         for epoch in range(num_epochs):
             print(f"Epoch {epoch+1}/{num_epochs}")

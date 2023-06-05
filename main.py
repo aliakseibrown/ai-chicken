@@ -4,8 +4,10 @@ import random
 import land
 import tractor
 import blocks
+import nn
 import astar_search
 from pygame.locals import *
+import numpy as np
 
 
 class Game:
@@ -22,6 +24,8 @@ class Game:
         self.dead_grass_body = []
         self.grass_body = []
         self.red_block = [] #aim block
+
+        #self.one_body = []
 
         self.fawn_seed_body = []
         self.fawn_wheat_body = []
@@ -58,6 +62,15 @@ class Game:
 
         # self.potato = blocks.Blocks(self.surface, self.cell_size)
         # self.potato.locate_soil('black earth', 6, 1, [])
+
+        #class_names = ['Pumpkin', 'Tomato', 'Carrot']
+
+        self.neural_network = nn.NNModel("neural_network/save/second_model.pth")
+
+        # self.pumpkin_batch = self.neural_network.input_image("resources/pampkin.png")
+        # self.tomato_batch = self.neural_network.input_image("resources/tomato.png")
+        # self.carrot_batch = self.neural_network.input_image("resources/carrot.png")
+        
 
         self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
@@ -101,9 +114,16 @@ class Game:
                         random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
                         random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
                         print("Generated target: ",random_x, random_y)
+                        #aim-blue block
                         if self.red_block:
                             self.red_block.pop()
                         self.red_block.append([random_x/50, random_y/50])
+
+                        self.path_image = "resources/2.png"
+                        self.aim_batch = self.neural_network.input_image(self.path_image)
+                        self.predicate = self.neural_network.predicte(self.aim_batch)
+
+
                         # below line should be later moved into tractor.py
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         #bandaid to know about stones
