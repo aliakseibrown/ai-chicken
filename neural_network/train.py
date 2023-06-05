@@ -4,9 +4,9 @@ import torch.nn as nn
 import torch.optim as optim
 import time
 from tqdm.auto import tqdm
-from model import CNNModel
-from datasets import train_loader, valid_loader
-from utils import save_model, save_plots
+from neural_network.model import CNNModel
+from neural_network.datasets import train_loader, valid_loader
+from neural_network.utils import save_model, save_plots
 
 # construct the argument parser
 parser = argparse.ArgumentParser()

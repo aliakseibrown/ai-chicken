@@ -2,7 +2,7 @@ import torch
 import cv2
 import torchvision.transforms as transforms
 import argparse
-from model import CNNModel
+from neural_network.model import CNNModel
 # construct the argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', 
@@ -22,7 +22,7 @@ def main(path):
 
     # initialize the model and load the trained weights
     model = CNNModel().to(device)
-    checkpoint = torch.load('outputs/model.pth', map_location=device)
+    checkpoint = torch.load('./neural_network/outputs/model.pth', map_location=device)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.eval()
 
