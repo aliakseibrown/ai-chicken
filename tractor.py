@@ -31,22 +31,6 @@ class Tractor:
 
 
     def move(self, direction, cell_size, cell_number):
-        # if direction == 'up':
-        #     if self.y != 0:
-        #         self.y -= cell_size
-        #     self.image = self.up
-        # if direction == 'down':
-        #     if self.y != (cell_number-1)*cell_size:
-        #         self.y += cell_size
-        #     self.image = self.down
-        # if direction == 'left':
-        #     if self.x != 0:
-        #         self.x -= cell_size
-        #     self.image = self.left
-        # if direction == 'right':
-        #     if self.x != (cell_number-1)*cell_size:
-        #         self.x += cell_size
-        #     self.image = self.right
         if direction == 'move':
             if self.angle == 0 and self.y != 0:
                 self.y -= cell_size

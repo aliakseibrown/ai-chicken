@@ -5,6 +5,7 @@ import soil
 
 
 class Blocks:
+
     def __init__(self, parent_screen,cell_size):
         self.parent_screen = parent_screen
         self.flower_image = pygame.image.load(r'resources/flower.png').convert_alpha()
@@ -25,8 +26,11 @@ class Blocks:
         self.fawn_wheat_image = pygame.image.load(r'resources/fawn_wheat.png').convert_alpha()
         self.fawn_wheat_image = pygame.transform.scale(self.fawn_wheat_image, (cell_size, cell_size))
 
+        self.red_image = pygame.image.load(r'resources/redBush.png').convert_alpha()
+        self.red_image = pygame.transform.scale(self.red_image, (cell_size, cell_size))
 
         self.soil = soil.Soil()
+
 
     def locate_blocks(self, blocks_number, cell_number, body):
         for i in range(blocks_number):
@@ -53,6 +57,8 @@ class Blocks:
                 self.parent_screen.blit(self.fawn_seed_image, (x, y))
             if color == 'fawn_wheat':
                 self.parent_screen.blit(self.fawn_wheat_image, (x, y))
+            if color == 'red':
+                self.parent_screen.blit(self.red_image, (x, y))
 
 
 
