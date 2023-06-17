@@ -31,6 +31,7 @@ class Game:
 
         self.grass_list = [] # 1-level
         self.plant_list = [] # 2-level
+        self.fruits_list = [] # 2-level - second model agent
         self.stone_list = [] # 3-level
         self.aim_list = []   # 4-level
 
@@ -40,13 +41,23 @@ class Game:
 
         self.Plants = plants_settings.PlantsSettings(self.surface, self.cell_size, self.cell_number)
         
-        self.Plants.locate_plant(self.plant_list, 'wheat', self.blocks_number)
-        self.Plants.locate_plant(self.plant_list, 'flower', self.blocks_number)
-        self.Plants.locate_plant(self.plant_list, 'eggplant', self.blocks_number)
+        #plant_list
+        # self.Plants.locate_plant(self.plant_list, 'wheat', self.blocks_number)
+        # self.Plants.locate_plant(self.plant_list, 'flower', self.blocks_number)
+        # self.Plants.locate_plant(self.plant_list, 'bush', self.blocks_number)
+
+        #fruits_list
+        self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number)
+        self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number)
+        self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number)
+        self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number)
+        self.Plants.locate_fruit(self.plant_list, 'wheat', self.blocks_number)
+
+
 
         self.Plants.locate_aim(self.aim_list, 0, 0)
 
-        self.Plants.locate_plant(self.stone_list, 'stone', self.blocks_number)
+        self.Plants.locate_fruit(self.stone_list, 'stone', self.blocks_number)
 
         #self.image_wheat = self.Plants.wheat_watered()
         self.chicken = chick.Chicken(self.surface, self.cell_size, self.cell_number)
@@ -118,6 +129,7 @@ class Game:
                 self.surface.fill((123, 56, 51))  # background color
                 self.Field.draw_grass(self.grass_list)
                 self.Plants.draw_plant(self.plant_list)
+                self.Plants.draw_plant(self.fruits_list)
                 self.Plants.draw_plant(self.stone_list)
 
                 self.Plants.draw_aim(self.aim_list)

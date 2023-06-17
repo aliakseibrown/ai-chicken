@@ -11,10 +11,13 @@ class Chicken:
         self.left = pygame.image.load(r'resources/chicken/left.png').convert_alpha()
         self.right = pygame.image.load(r'resources/chicken/right.png').convert_alpha()
 
-        self.up = pygame.transform.scale(self.up, (cell_size+2, cell_size))
-        self.down = pygame.transform.scale(self.down, (cell_size, cell_size+2))
-        self.left = pygame.transform.scale(self.left, (cell_size+2, cell_size+2))
-        self.right = pygame.transform.scale(self.right, (cell_size+4, cell_size+1))
+        self.cell_size = cell_size
+        self.cell_number = cell_number
+        
+        self.up = pygame.transform.scale(self.up, (self.cell_size+2, self.cell_size))
+        self.down = pygame.transform.scale(self.down, (self.cell_size, self.cell_size+2))
+        self.left = pygame.transform.scale(self.left, (self.cell_size+2, self.cell_size+2))
+        self.right = pygame.transform.scale(self.right, (self.cell_size+4, self.cell_size+1))
 
         self.x = 1 # to-check: start pos may be written explicit
         self.y = 1
@@ -22,8 +25,6 @@ class Chicken:
         self.direction = 'up'
         self.image = self.down
         self.step = 0
-        self.cell_size = cell_size
-        self.cell_number = cell_number
         
     def move(self, direction):
         print('MOVE')
