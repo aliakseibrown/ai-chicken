@@ -1,14 +1,17 @@
+import random
 import os
 import pygame
-import random
-import chicken.chicken as chick
 from pygame.locals import *
-from models import plant
-from methods import field_settings
-import neural_network.inference
-import models.plant as plant
-import methods.plants_settings as plants_settings
-import methods.graph_search as graph_search
+from core.chicken import chicken as chick
+from core.field import field_settings
+from core.plants import plants_settings
+
+from agent.neural_network import inference
+#import agent.neural_network.inference
+#import neural_network.inference
+# import core.plants.plant as plant
+# import core.plants.plants_settings as plants_settings
+import agent.methods.graph_search as graph_search
 
 
 #import models.field_block as field_block
@@ -26,10 +29,10 @@ class Game:
         pygame.init()
         self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))
 
-        self.grass_list = []
-        self.plant_list = []
-        self.stone_list = []
-        self.aim_list = []
+        self.grass_list = [] # 1-level
+        self.plant_list = [] # 2-level
+        self.stone_list = [] # 3-level
+        self.aim_list = []   # 4-level
 
         self.Field = field_settings.FieldSettings(self.surface, self.cell_size, self.cell_number)
         self.Field.locate_field(self.grass_list, 0, self.wet_grass_number) # wet grass
@@ -39,9 +42,7 @@ class Game:
         
         self.Plants.locate_plant(self.plant_list, 'wheat', self.blocks_number)
         self.Plants.locate_plant(self.plant_list, 'flower', self.blocks_number)
-        self.Plants.locate_plant(self.plant_list, 'bush', self.blocks_number)
-
-        #self.Plants.locate_plant(self.plant_list, 'aim', 1)
+        self.Plants.locate_plant(self.plant_list, 'eggplant', self.blocks_number)
 
         self.Plants.locate_aim(self.aim_list, 0, 0)
 
@@ -92,14 +93,14 @@ class Game:
                             [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.plant_list)
                         
                         #neural_network
-                        current_veggie = next(os.walk('./neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./neural_network/images/test'))[1])-1)]
+                        current_veggie = next(os.walk('./agent/neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./agent/neural_network/images/test'))[1])-1)]
                         if(current_veggie in veggies_debug):
                             veggies_debug[current_veggie]+=1
                         else:
                             veggies_debug[current_veggie] = 1
 
-                        current_veggie_example = next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./neural_network/images/test/{current_veggie}'))[2])-1)]
-                        predicted_veggie = neural_network.inference.main(f"./neural_network/images/test/{current_veggie}/{current_veggie_example}")
+                        current_veggie_example = next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2])-1)]
+                        predicted_veggie = inference.main(f"./agent/neural_network/images/test/{current_veggie}/{current_veggie_example}")
                         if predicted_veggie in veggies:
                             veggies[predicted_veggie]+=1
                         else:
@@ -118,7 +119,7 @@ class Game:
                 self.Field.draw_grass(self.grass_list)
                 self.Plants.draw_plant(self.plant_list)
                 self.Plants.draw_plant(self.stone_list)
-                
+
                 self.Plants.draw_aim(self.aim_list)
 
                 self.chicken.draw()

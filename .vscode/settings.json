@@ -1,0 +1,9 @@
+{
+    "python.analysis.extraPaths": [
+        "./sources",
+        "/usr/local/lib/python3.10/site-packages",
+        "/Users/alexeybrown/development",
+        "/Users/alexeybrown/development/flutter/",
+        "./agent"
+    ]
+}
