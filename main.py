@@ -47,10 +47,10 @@ class Game:
         # self.Plants.locate_plant(self.plant_list, 'bush', self.blocks_number)
 
         #fruits_list
-        self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number)
-        self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number)
-        self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number)
-        self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number)
+        self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number-5)
+        self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number-5)
+        self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number-5)
+        self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number-5)
         self.Plants.locate_fruit(self.plant_list, 'wheat', self.blocks_number)
 
 

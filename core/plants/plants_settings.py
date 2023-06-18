@@ -90,7 +90,7 @@ class PlantsSettings:
                         self.block = plant.Plant(
                             i, name, 0, self.wheat_dead_image, self.wheat_image, rand_x, rand_y, False
                         )
-                    if name == 'strawberrie':
+                    if name == 'strawberry':
                         self.block = plant.Plant(
                             i, name, 1, self.strawberrie_image, self.strawberrie_image, rand_x, rand_y, False
                         )
