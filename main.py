@@ -5,6 +5,8 @@ from pygame.locals import *
 from core.chicken import chicken as chick
 from core.field import field_settings
 from core.plants import plants_settings
+from agent.methods.genetic_algorithm import genetic_algorithm
+import numpy as np
 
 from agent.neural_network import inference
 #import agent.neural_network.inference
@@ -71,9 +73,18 @@ class Game:
         self.search_object = graph_search.Search(self.cell_size, self.cell_number)
         chicken_next_moves = []
 
-
         veggies = dict()
         veggies_debug = dict()
+
+        wheat_list = [obj for obj in self.plant_list if obj.name == "wheat" and obj.state == 0]
+
+        new_list = [()]
+        a = 1
+        for obj in wheat_list:
+            new_list.append ((obj.xy[0], obj.xy[1]))
+        
+        new_list[0] = (1, 1)
+        best_path = genetic_algorithm(new_list)
 
         while running:
             clock.tick(60)  # manual fps control not to overwork the computer
@@ -95,14 +106,21 @@ class Game:
 
                 if event.type == move_chicken_event:
                     if len(chicken_next_moves) == 0:
-
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         closest_wheat = self.search_object.closest_point(self.chicken.x, self.chicken.y, 'wheat', self.plant_list)
-                        self.aim_list[0].xy[0] = closest_wheat[0]
-                        self.aim_list[0].xy[1] = closest_wheat[1]
-                        chicken_next_moves = self.search_object.astarsearch(
-                            [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.plant_list)
+                        # self.aim_list[0].xy[0] = closest_wheat[0]
+                        # self.aim_list[0].xy[1] = closest_wheat[1]
+                        self.aim_list[0].xy[0] = best_path[a][0]
+                        self.aim_list[0].xy[1] = best_path[a][1]
+                        # a += 1
+                        # target = wheat_list[a]
+                        # chicken_next_moves = self.search_object.astarsearch(
+                        #   [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.plant_list)
                         
+                        chicken_next_moves = self.search_object.astarsearch(
+                          [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [best_path[a][0], best_path[a][1]], self.stone_list, self.plant_list)
+
+                        a += 1
                         #neural_network
                         current_veggie = next(os.walk('./agent/neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./agent/neural_network/images/test'))[1])-1)]
                         if(current_veggie in veggies_debug):
