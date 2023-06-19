@@ -6,6 +6,8 @@ from core.chicken import chicken as chick
 from core.field import field_settings
 from core.plants import plants_settings
 from agent.methods.genetic_algorithm import genetic_algorithm
+from agent.methods import a_star
+
 import numpy as np
 
 from agent.neural_network import inference
@@ -13,7 +15,6 @@ from agent.neural_network import inference
 #import neural_network.inference
 # import core.plants.plant as plant
 # import core.plants.plants_settings as plants_settings
-import agent.methods.graph_search as graph_search
 
 
 #import models.field_block as field_block
@@ -59,7 +60,7 @@ class Game:
         #vegies_list
         self.Plants.locate_veggies(self.veggies_list, 'pepper', self.blocks_number-5)
         self.Plants.locate_veggies(self.veggies_list, 'carrot', self.blocks_number-5)
-        self.Plants.locate_veggies(self.veggies_list, 'pumpkin', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'papaya', self.blocks_number-5)
         self.Plants.locate_veggies(self.veggies_list, 'wheat', self.blocks_number)
 
 
@@ -75,8 +76,8 @@ class Game:
         running = True
         clock = pygame.time.Clock()
         move_chicken_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_chicken_event, 1000)  # chicken moves every 1000 ms
-        self.search_object = graph_search.Search(self.cell_size, self.cell_number)
+        pygame.time.set_timer(move_chicken_event, 500)  # chicken moves every 1000 ms
+        self.search_object = a_star.Search(self.cell_size, self.cell_number)
         chicken_next_moves = []
 
         veggies = dict()
