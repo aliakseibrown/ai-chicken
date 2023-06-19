@@ -76,7 +76,7 @@ class Game:
         running = True
         clock = pygame.time.Clock()
         move_chicken_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_chicken_event, 500)  # chicken moves every 1000 ms
+        pygame.time.set_timer(move_chicken_event, 1000)  # chicken moves every 1000 ms
         self.search_object = a_star.Search(self.cell_size, self.cell_number)
         chicken_next_moves = []
 
