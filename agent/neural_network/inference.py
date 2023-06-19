@@ -41,7 +41,8 @@ def main(path):
     # read and preprocess the image
     image = cv2.imread(path)
     # get the ground truth class
-    gt_class = path.split('/')[-2]
+    #gt_class = path.split('/')[-2]
+    gt_class = path.split('/')
     orig_image = image.copy()
     # convert to RGB format
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

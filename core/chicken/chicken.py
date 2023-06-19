@@ -27,7 +27,6 @@ class Chicken:
         self.step = 0
         
     def move(self, direction):
-        print('MOVE')
         if direction == 'move':
             if self.angle == 0 and self.y != 0:
                 self.y -= 1
@@ -56,9 +55,7 @@ class Chicken:
             self.image = self.left
 
         self.step = self.step + 1
-        print(self.x, self.y)
-        print('step: ', self.step)
-        
+        print('The chicken is on: ', self.x, self.y)        
     def water(self, xy , plant_list):
         for obj in plant_list:
             if obj.xy == xy:

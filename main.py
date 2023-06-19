@@ -32,7 +32,8 @@ class Game:
         self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))
 
         self.grass_list = [] # 1-level
-        self.plant_list = [] # 2-level
+        self.plant_list = [] # 2-level - test
+        self.veggies_list = [] # 2-level - first model agent
         self.fruits_list = [] # 2-level - second model agent
         self.stone_list = [] # 3-level
         self.aim_list = []   # 4-level
@@ -48,18 +49,23 @@ class Game:
         # self.Plants.locate_plant(self.plant_list, 'flower', self.blocks_number)
         # self.Plants.locate_plant(self.plant_list, 'bush', self.blocks_number)
 
-        #fruits_list
-        self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number-5)
-        self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number-5)
-        self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number-5)
-        self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number-5)
-        self.Plants.locate_fruit(self.plant_list, 'wheat', self.blocks_number)
+        # #fruits_list
+        # self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'wheat', self.blocks_number)
 
+        #vegies_list
+        self.Plants.locate_veggies(self.veggies_list, 'pepper', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'carrot', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'pumpkin', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'wheat', self.blocks_number)
 
 
         self.Plants.locate_aim(self.aim_list, 0, 0)
 
-        self.Plants.locate_fruit(self.stone_list, 'stone', self.blocks_number)
+        self.Plants.locate_veggies(self.stone_list, 'stone', self.blocks_number)
 
         #self.image_wheat = self.Plants.wheat_watered()
         self.chicken = chick.Chicken(self.surface, self.cell_size, self.cell_number)
@@ -69,14 +75,14 @@ class Game:
         running = True
         clock = pygame.time.Clock()
         move_chicken_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_chicken_event, 500)  # chicken moves every 1000 ms
+        pygame.time.set_timer(move_chicken_event, 1000)  # chicken moves every 1000 ms
         self.search_object = graph_search.Search(self.cell_size, self.cell_number)
         chicken_next_moves = []
 
         veggies = dict()
         veggies_debug = dict()
 
-        wheat_list = [obj for obj in self.plant_list if obj.name == "wheat" and obj.state == 0]
+        wheat_list = [obj for obj in self.veggies_list if obj.name == "wheat" and obj.state == 0]
 
         new_list = [()]
         a = 1
@@ -107,7 +113,7 @@ class Game:
                 if event.type == move_chicken_event:
                     if len(chicken_next_moves) == 0:
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
-                        closest_wheat = self.search_object.closest_point(self.chicken.x, self.chicken.y, 'wheat', self.plant_list)
+                        closest_wheat = self.search_object.closest_point(self.chicken.x, self.chicken.y, 'wheat', self.veggies_list)
                         # self.aim_list[0].xy[0] = closest_wheat[0]
                         # self.aim_list[0].xy[1] = closest_wheat[1]
                         self.aim_list[0].xy[0] = best_path[a][0]
@@ -115,40 +121,50 @@ class Game:
                         # a += 1
                         # target = wheat_list[a]
                         # chicken_next_moves = self.search_object.astarsearch(
-                        #   [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.plant_list)
+                        #   [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.veggies_list)
                         
                         chicken_next_moves = self.search_object.astarsearch(
-                          [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [best_path[a][0], best_path[a][1]], self.stone_list, self.plant_list)
+                          [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [best_path[a][0], best_path[a][1]], self.stone_list, self.veggies_list)
 
                         a += 1
-                        #neural_network
-                        current_veggie = next(os.walk('./agent/neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./agent/neural_network/images/test'))[1])-1)]
-                        if(current_veggie in veggies_debug):
-                            veggies_debug[current_veggie]+=1
-                        else:
-                            veggies_debug[current_veggie] = 1
+                        # #neural_network
+                        # current_veggie = next(os.walk('./agent/neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./agent/neural_network/images/test'))[1])-1)]
+                        # if(current_veggie in veggies_debug):
+                        #     veggies_debug[current_veggie]+=1
+                        # else:
+                        #     veggies_debug[current_veggie] = 1
 
-                        current_veggie_example = next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2])-1)]
-                        predicted_veggie = inference.main(f"./agent/neural_network/images/test/{current_veggie}/{current_veggie_example}")
-                        if predicted_veggie in veggies:
-                            veggies[predicted_veggie]+=1
-                        else:
-                            veggies[predicted_veggie] = 1
-                        print("Debug veggies: ", veggies_debug, "Predicted veggies: ", veggies)
+                        # current_veggie_example = next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2])-1)]
+                        # predicted_veggie = inference.main(f"./agent/neural_network/images/test/{current_veggie}/{current_veggie_example}")
+                        # if predicted_veggie in veggies:
+                        #     veggies[predicted_veggie]+=1
+                        # else:
+                        #     veggies[predicted_veggie] = 1
+                        # print("Debug veggies: ", veggies_debug, "Predicted veggies: ", veggies)
                     else:
                         self.chicken.move(chicken_next_moves.pop(0)[0])
                         if len(chicken_next_moves) == 0:
-                            self.chicken.water([self.aim_list[0].xy[0], self.aim_list[0].xy[1]], self.plant_list)
+                            self.chicken.water([self.aim_list[0].xy[0], self.aim_list[0].xy[1]], self.veggies_list)
                         print(self.chicken.x, self.chicken.y)
-
+                    current_block = ''
+                    for obj in self.veggies_list:
+                        if obj.xy == [self.chicken.x, self.chicken.y]:
+                            if obj.name != 'wheat':
+                                current_block = obj.image_path
+                    if current_block == '':
+                        print('the block is empty')
+                    else:
+                        veggies_images = inference.main(current_block)
+                        print('Current veggie: ',veggies_images)
                 elif event.type == QUIT:
                     running = False
 
                 self.surface.fill((123, 56, 51))  # background color
                 self.Field.draw_grass(self.grass_list)
-                self.Plants.draw_plant(self.plant_list)
-                self.Plants.draw_plant(self.fruits_list)
+                #self.Plants.draw_plant(self.plant_list)
+                #self.Plants.draw_plant(self.fruits_list)
                 self.Plants.draw_plant(self.stone_list)
+                self.Plants.draw_plant(self.veggies_list)
 
                 self.Plants.draw_aim(self.aim_list)
 
