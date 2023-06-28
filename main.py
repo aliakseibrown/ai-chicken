@@ -1,5 +1,25 @@
+import random
 import os
 import pygame
+<<<<<<< HEAD
+from pygame.locals import *
+from core.chicken import chicken as chick
+from core.field import field_settings
+from core.plants import plants_settings
+from agent.methods.genetic_algorithm import genetic_algorithm
+from agent.methods import a_star
+
+import numpy as np
+
+from agent.neural_network import inference
+#import agent.neural_network.inference
+#import neural_network.inference
+# import core.plants.plant as plant
+# import core.plants.plants_settings as plants_settings
+
+
+#import models.field_block as field_block
+=======
 import random
 import land
 import tractor
@@ -8,14 +28,19 @@ import nn
 import astar_search
 from pygame.locals import *
 import numpy as np
+>>>>>>> main
 
 
 class Game:
     cell_size = 50
     cell_number = 15  # horizontally
     blocks_number = 20
-    
+    dry_grass_number = 50
+    wet_grass_number = (cell_number*cell_number) - dry_grass_number
+
     def __init__(self):
+<<<<<<< HEAD
+=======
 
         self.dead_leaf_body = []
         self.green_leaf_body = []
@@ -38,31 +63,52 @@ class Game:
 
         self.entire_block = {}
 
+>>>>>>> main
         # initialize a window
         pygame.init()
         self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))
 
-        # finds places for every type soil and grass
-        self.black_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
-        self.black_earth.locate_soil(self.black_earth_body)
-        self.green_earth = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
-        self.green_earth.locate_soil(self.green_earth_body)
-        self.fawn_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
-        self.fawn_soil.locate_soil(self.fawn_soil_body)
-        self.fen_soil = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
-        self.fen_soil.locate_soil(self.fen_soil_body)
-        self.grass = land.Land(self.surface, self.cell_size, self.cell_number, self.allBodyPos, 100)
+        self.grass_list = [] # 1-level
+        self.plant_list = [] # 2-level - test
+        self.veggies_list = [] # 2-level - first model agent
+        self.fruits_list = [] # 2-level - second model agent
+        self.stone_list = [] # 3-level
+        self.aim_list = []   # 4-level
 
-        self.blocks = blocks.Blocks(self.surface, self.cell_size)
-        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.dead_leaf_body)
-        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.stone_body)
-        self.blocks.locate_blocks(self.blocks_number, self.cell_number, self.flower_body)
+        self.Field = field_settings.FieldSettings(self.surface, self.cell_size, self.cell_number)
+        self.Field.locate_field(self.grass_list, 0, self.wet_grass_number) # wet grass
+        self.Field.locate_field(self.grass_list, 1, self.dry_grass_number) # dry grass
 
-        #self.blocks.locate_blocks(1, self.cell_number, self.red_block)
+        self.Plants = plants_settings.PlantsSettings(self.surface, self.cell_size, self.cell_number)
+        
+        #plant_list
+        # self.Plants.locate_plant(self.plant_list, 'wheat', self.blocks_number)
+        # self.Plants.locate_plant(self.plant_list, 'flower', self.blocks_number)
+        # self.Plants.locate_plant(self.plant_list, 'bush', self.blocks_number)
 
-        # self.potato = blocks.Blocks(self.surface, self.cell_size)
-        # self.potato.locate_soil('black earth', 6, 1, [])
+        # #fruits_list
+        # self.Plants.locate_fruit(self.fruits_list, 'apple', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'banana', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'strawberry', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number-5)
+        # self.Plants.locate_fruit(self.fruits_list, 'wheat', self.blocks_number)
 
+<<<<<<< HEAD
+        #vegies_list
+        self.Plants.locate_veggies(self.veggies_list, 'pepper', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'carrot', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'papaya', self.blocks_number-5)
+        self.Plants.locate_veggies(self.veggies_list, 'wheat', self.blocks_number)
+
+
+        self.Plants.locate_aim(self.aim_list, 0, 0)
+
+        self.Plants.locate_veggies(self.stone_list, 'stone', self.blocks_number)
+
+        #self.image_wheat = self.Plants.wheat_watered()
+        self.chicken = chick.Chicken(self.surface, self.cell_size, self.cell_number)
+        self.chicken.draw()
+=======
         #class_names = ['Pumpkin', 'Tomato', 'Carrot']
 
         self.neural_network = nn.NNModel("neural_network/save/second_model.pth")
@@ -74,18 +120,28 @@ class Game:
 
         self.tractor = tractor.Tractor(self.surface, self.cell_size)
         self.tractor.draw()
+>>>>>>> main
 
     def run(self):
-        # print(self.potato.get_soil_info().get_name())
-        # print(self.potato.get_soil_info().get_acidity())
-        # print(self.potato.get_soil_info().get_irrigation())
         running = True
         clock = pygame.time.Clock()
+        move_chicken_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(move_chicken_event, 1000)  # chicken moves every 1000 ms
+        self.search_object = a_star.Search(self.cell_size, self.cell_number)
+        chicken_next_moves = []
 
-        move_tractor_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(move_tractor_event, 100)  # tractor moves every 1000 ms
-        tractor_next_moves = []
-        astar_search_object = astar_search.Search(self.cell_size, self.cell_number)
+        veggies = dict()
+        veggies_debug = dict()
+
+        wheat_list = [obj for obj in self.veggies_list if obj.name == "wheat" and obj.state == 0]
+
+        new_list = [()]
+        a = 1
+        for obj in wheat_list:
+            new_list.append ((obj.xy[0], obj.xy[1]))
+        
+        new_list[0] = (1, 1)
+        best_path = genetic_algorithm(new_list)
 
         while running:
             clock.tick(60)  # manual fps control not to overwork the computer
@@ -93,17 +149,22 @@ class Game:
                 if event.type == KEYDOWN:
                     if pygame.key.get_pressed()[K_ESCAPE]:
                         running = False
-                        # in case we want to use keyboard
                     if pygame.key.get_pressed()[K_UP]:
-                        # self.tractor.move('up', self.cell_size, self.cell_number)
-                        self.tractor.move('move', self.cell_size, self.cell_number)
+                        # self.chicken.move('up', self.cell_size, self.cell_number)
+                        self.chicken.move('move', self.cell_size, self.cell_number)
                     # if pygame.key.get_pressed()[K_DOWN]:
-                    #     self.tractor.move('down', self.cell_size, self.cell_number)
+                    #     self.chicken.move('down', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_LEFT]:
-                        self.tractor.move('left', self.cell_size, self.cell_number)
+                        self.chicken.move('left', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_RIGHT]:
-                        self.tractor.move('right', self.cell_size, self.cell_number)
+                        self.chicken.move('right', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_SPACE]:
+<<<<<<< HEAD
+                        self.chicken.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
+
+                if event.type == move_chicken_event:
+                    if len(chicken_next_moves) == 0:
+=======
                         self.tractor.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
                         # self.tractor.water(self.grass_body, self.dead_grass_body, self.cell_size)
                     if pygame.key.get_pressed()[K_q]:
@@ -125,37 +186,64 @@ class Game:
 
 
                         # below line should be later moved into tractor.py
+>>>>>>> main
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
-                        #bandaid to know about stones
-                        tractor_next_moves = astar_search_object.astarsearch(
-                            [self.tractor.x, self.tractor.y, angles[self.tractor.angle]], [random_x, random_y], self.stone_body, self.flower_body)
+                        closest_wheat = self.search_object.closest_point(self.chicken.x, self.chicken.y, 'wheat', self.veggies_list)
+                        # self.aim_list[0].xy[0] = closest_wheat[0]
+                        # self.aim_list[0].xy[1] = closest_wheat[1]
+                        self.aim_list[0].xy[0] = best_path[a][0]
+                        self.aim_list[0].xy[1] = best_path[a][1]
+                        # a += 1
+                        # target = wheat_list[a]
+                        # chicken_next_moves = self.search_object.astarsearch(
+                        #   [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [closest_wheat[0], closest_wheat[1]], self.stone_list, self.veggies_list)
+                        
+                        chicken_next_moves = self.search_object.astarsearch(
+                          [self.chicken.x, self.chicken.y, angles[self.chicken.angle]], [best_path[a][0], best_path[a][1]], self.stone_list, self.veggies_list)
+
+                        a += 1
+                        # #neural_network
+                        # current_veggie = next(os.walk('./agent/neural_network/images/test'))[1][random.randint(0, len(next(os.walk('./agent/neural_network/images/test'))[1])-1)]
+                        # if(current_veggie in veggies_debug):
+                        #     veggies_debug[current_veggie]+=1
+                        # else:
+                        #     veggies_debug[current_veggie] = 1
+
+                        # current_veggie_example = next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2][random.randint(0, len(next(os.walk(f'./agent/neural_network/images/test/{current_veggie}'))[2])-1)]
+                        # predicted_veggie = inference.main(f"./agent/neural_network/images/test/{current_veggie}/{current_veggie_example}")
+                        # if predicted_veggie in veggies:
+                        #     veggies[predicted_veggie]+=1
+                        # else:
+                        #     veggies[predicted_veggie] = 1
+                        # print("Debug veggies: ", veggies_debug, "Predicted veggies: ", veggies)
                     else:
-                        self.tractor.move(tractor_next_moves.pop(0)[0], self.cell_size, self.cell_number)
+                        self.chicken.move(chicken_next_moves.pop(0)[0])
+                        if len(chicken_next_moves) == 0:
+                            self.chicken.water([self.aim_list[0].xy[0], self.aim_list[0].xy[1]], self.veggies_list)
+                        print(self.chicken.x, self.chicken.y)
+                    current_block = ''
+                    for obj in self.veggies_list:
+                        if obj.xy == [self.chicken.x, self.chicken.y]:
+                            if obj.name != 'wheat':
+                                current_block = obj.image_path
+                    if current_block == '':
+                        print('the block is empty')
+                    else:
+                        veggies_images = inference.main(current_block)
+                        print('Current veggie: ',veggies_images)
                 elif event.type == QUIT:
                     running = False
 
                 self.surface.fill((123, 56, 51))  # background color
-                self.grass.set_and_place_block_of_grass('good')
-                self.black_earth.place_soil(self.black_earth_body, 'black_earth')
-                self.green_earth.place_soil(self.green_earth_body, 'green_earth')
-                self.fawn_soil.place_soil(self.fawn_soil_body, 'fawn_soil')
-                self.fen_soil.place_soil(self.fen_soil_body, 'fen_soil')
+                self.Field.draw_grass(self.grass_list)
+                #self.Plants.draw_plant(self.plant_list)
+                #self.Plants.draw_plant(self.fruits_list)
+                self.Plants.draw_plant(self.stone_list)
+                self.Plants.draw_plant(self.veggies_list)
 
-                # plants examples
-                self.blocks.place_blocks(self.surface, self.cell_size, self.dead_leaf_body, 'leaf')
-                self.blocks.place_blocks(self.surface, self.cell_size, self.green_leaf_body, 'alive')
-                self.blocks.place_blocks(self.surface, self.cell_size, self.stone_body, 'stone')
-                self.blocks.place_blocks(self.surface, self.cell_size, self.flower_body, 'flower')
+                self.Plants.draw_aim(self.aim_list)
 
-                self.blocks.place_blocks(self.surface, self.cell_size, self.red_block, 'red')
-
-                # seeds
-                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_seed_body, 'fawn_seed')
-
-                # wheat
-                self.blocks.place_blocks(self.surface, self.cell_size, self.fawn_wheat_body, 'fawn_wheat')
-
-                self.tractor.draw()
+                self.chicken.draw()
                 pygame.display.update()
 
 
