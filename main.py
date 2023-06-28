@@ -1,6 +1,7 @@
 import random
 import os
 import pygame
+<<<<<<< HEAD
 from pygame.locals import *
 from core.chicken import chicken as chick
 from core.field import field_settings
@@ -18,6 +19,16 @@ from agent.neural_network import inference
 
 
 #import models.field_block as field_block
+=======
+import random
+import land
+import tractor
+import blocks
+import nn
+import astar_search
+from pygame.locals import *
+import numpy as np
+>>>>>>> main
 
 
 class Game:
@@ -28,6 +39,31 @@ class Game:
     wet_grass_number = (cell_number*cell_number) - dry_grass_number
 
     def __init__(self):
+<<<<<<< HEAD
+=======
+
+        self.dead_leaf_body = []
+        self.green_leaf_body = []
+        self.stone_body = []
+        self.flower_body = []
+        self.dead_grass_body = []
+        self.grass_body = []
+        self.red_block = [] #aim block
+
+        #self.one_body = []
+
+        self.fawn_seed_body = []
+        self.fawn_wheat_body = []
+
+        self.black_earth_body = []
+        self.green_earth_body = []
+        self.fawn_soil_body = []
+        self.fen_soil_body = []
+        self.allBodyPos = []
+
+        self.entire_block = {}
+
+>>>>>>> main
         # initialize a window
         pygame.init()
         self.surface = pygame.display.set_mode((self.cell_size*self.cell_number, self.cell_size*self.cell_number))
@@ -57,6 +93,7 @@ class Game:
         # self.Plants.locate_fruit(self.fruits_list, 'grapes', self.blocks_number-5)
         # self.Plants.locate_fruit(self.fruits_list, 'wheat', self.blocks_number)
 
+<<<<<<< HEAD
         #vegies_list
         self.Plants.locate_veggies(self.veggies_list, 'pepper', self.blocks_number-5)
         self.Plants.locate_veggies(self.veggies_list, 'carrot', self.blocks_number-5)
@@ -71,6 +108,19 @@ class Game:
         #self.image_wheat = self.Plants.wheat_watered()
         self.chicken = chick.Chicken(self.surface, self.cell_size, self.cell_number)
         self.chicken.draw()
+=======
+        #class_names = ['Pumpkin', 'Tomato', 'Carrot']
+
+        self.neural_network = nn.NNModel("neural_network/save/second_model.pth")
+
+        # self.pumpkin_batch = self.neural_network.input_image("resources/pampkin.png")
+        # self.tomato_batch = self.neural_network.input_image("resources/tomato.png")
+        # self.carrot_batch = self.neural_network.input_image("resources/carrot.png")
+        
+
+        self.tractor = tractor.Tractor(self.surface, self.cell_size)
+        self.tractor.draw()
+>>>>>>> main
 
     def run(self):
         running = True
@@ -109,10 +159,34 @@ class Game:
                     if pygame.key.get_pressed()[K_RIGHT]:
                         self.chicken.move('right', self.cell_size, self.cell_number)
                     if pygame.key.get_pressed()[K_SPACE]:
+<<<<<<< HEAD
                         self.chicken.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
 
                 if event.type == move_chicken_event:
                     if len(chicken_next_moves) == 0:
+=======
+                        self.tractor.water(self.dead_leaf_body, self.green_leaf_body, self.cell_size)
+                        # self.tractor.water(self.grass_body, self.dead_grass_body, self.cell_size)
+                    if pygame.key.get_pressed()[K_q]:
+                        self.tractor.harvest(self.fawn_seed_body, self.fawn_wheat_body, self.cell_size)
+                        self.tractor.put_seed(self.fawn_soil_body, self.fawn_seed_body, self.cell_size)
+                if event.type == move_tractor_event:
+                    if len(tractor_next_moves) == 0:
+                        random_x = random.randrange(0, self.cell_number * self.cell_size, 50)
+                        random_y = random.randrange(0, self.cell_number * self.cell_size, 50)
+                        print("Generated target: ",random_x, random_y)
+                        #aim-blue block
+                        if self.red_block:
+                            self.red_block.pop()
+                        self.red_block.append([random_x/50, random_y/50])
+
+                        self.path_image = "resources/2.png"
+                        self.aim_batch = self.neural_network.input_image(self.path_image)
+                        self.predicate = self.neural_network.predicte(self.aim_batch)
+
+
+                        # below line should be later moved into tractor.py
+>>>>>>> main
                         angles = {0: 'UP', 90: 'RIGHT', 270: 'LEFT', 180: 'DOWN'}
                         closest_wheat = self.search_object.closest_point(self.chicken.x, self.chicken.y, 'wheat', self.veggies_list)
                         # self.aim_list[0].xy[0] = closest_wheat[0]
